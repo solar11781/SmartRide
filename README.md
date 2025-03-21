@@ -1,6 +1,7 @@
 # 🚗 SmartRide - Uber Clone
 
 SmartRide is a ride-sharing web application built using:
+
 - **React, Tailwind CSS** (Frontend)
 - **PHP** (Backend)
 - **MySQL** (Database)
@@ -11,16 +12,18 @@ SmartRide is a ride-sharing web application built using:
 ## 🚀 How to Run the Project
 
 ### 1️⃣ Create a Mapbox Account & Get an API Token
+
 1. Go to [Mapbox](https://www.mapbox.com).
 2. Sign up or log in.
 3. Copy your **Mapbox Access Token**
 4. Create a `.env` file in the root directory and add your token:
 
    ```ini
-   MAPBOX_TOKEN=your_mapbox_access_token_here
+   VITE_MAPBOX_TOKEN=your_mapbox_access_token_here
    ```
 
 ### 2️⃣ Set Up XAMPP (PHP & MySQL Backend)
+
 1. Open **XAMPP** and **start** the following services:
    - **Apache** (for PHP)
    - **MySQL** (for the database)
@@ -33,6 +36,7 @@ SmartRide is a ride-sharing web application built using:
 4. Make a database called `smartride` and import the `smartride.sql` database file.
 
 ### 3️⃣ Install Dependencies & Start the React App
+
 If this is your **first time cloning the repo**, install the necessary dependencies:
 
 ```sh

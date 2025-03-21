@@ -9,7 +9,7 @@ const DashboardLayout = () => {
         {/* Here you can embed your map (using something like Google Maps or Mapbox) */}
         <div className="h-full">
           <h2 className="text-center p-4">Map (or other info/buttons)</h2>
-          {/* <MapComponent /> */}
+          <MapComponent />
         </div>
       </div>
 
