@@ -23,4 +23,4 @@ CREATE TABLE users (
 --
 
 INSERT INTO `users` (`user_id`, `email`, `username`, `role`,`phone_number`, `password`) VALUES
-(1, 'admin@gmail.com', 'admin', 'Admin', '0123456789', 111);
+(1, 'admin@gmail.com', 'admin', 'Admin', '0123456789', '$2b$10$8RZiEPxolfO5U4vl.mw59u1rSqjDUXdAj/OosfZeLhkNRmhQG0kpO');

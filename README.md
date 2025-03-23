@@ -49,12 +49,19 @@ Then, start the development server:
 npm run dev
 ```
 
+## 4️⃣ Run Node.js Backend
+```sh
+cd smartride/backend
+node server.js
+```
+
 ---
 
 ## 📌 Project Structure
 
 ```
 smartride/
+│── backend
 │── node_modules
 │── public
 │── src/
@@ -66,4 +73,3 @@ smartride/
 │── README.md
 │── ...
 ```
-npm install express mysql2 cors dotenv bcrypt jsonwebtoken

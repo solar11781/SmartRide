@@ -12,10 +12,13 @@ const LoginPage = ({ setIsLoggedIn }) => {
     e.preventDefault();
 
     try {
-      const response = await axios.post("http://localhost:5001/api/auth/login", {
-        username,
-        password,
-      });
+      const response = await axios.post(
+        "http://localhost:5001/api/auth/login",
+        {
+          username,
+          password,
+        }
+      );
 
       const data = response.data;
 
@@ -43,9 +46,7 @@ const LoginPage = ({ setIsLoggedIn }) => {
         onSubmit={handleLogin}
       >
         <h2 className="text-2xl font-semibold text-center mb-6">Login</h2>
-        {error && (
-          <p className="text-red-500 text-center">{error}</p>
-        )}
+        {error && <p className="text-red-500 text-center">{error}</p>}
         <div className="mb-4">
           <label
             htmlFor="username"
