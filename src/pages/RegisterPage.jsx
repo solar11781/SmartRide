@@ -6,15 +6,24 @@ const RegisterPage = () => {
   const [email, setEmail] = useState("");
   const [phone_number, setPhoneNumber] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("customer");
+  const [role, setRole] = useState("Customer");
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const handleRegister = async (e) => {
     e.preventDefault();
 
+    // 🔐 Client-side validation
+    if (!/^[0-9]{10,15}$/.test(phone_number)) {
+      return setError("Phone number must be 10–15 digits.");
+    }
+
+    if (password.length < 6 || !/[!@#$%^&*]/.test(password)) {
+      return setError("Password must be at least 6 characters and include a special character.");
+    }
+
     try {
-      const response = await fetch("http://localhost/apis.php", {
+      const response = await fetch("http://localhost:5001/api/auth/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -28,20 +37,16 @@ const RegisterPage = () => {
         }),
       });
 
-      const data = await response.json(); // Parse the response JSON
+      const data = await response.json();
 
-      console.log("Response Data:", data); // Log the response data to the console
-
-      if (data) {
-        // If registration is successful, redirect to login page
+      if (response.ok && data.success) {
+        alert("✅ Account created successfully!");
         navigate("/login");
       } else {
-        setError(
-          data.message || "Error during registration. Please try again."
-        );
+        setError(data.message || "Registration failed. Please try again.");
       }
     } catch (error) {
-      setError({ error });
+      setError("❌ Server error. Please try again later.");
     }
   };
 
@@ -52,67 +57,49 @@ const RegisterPage = () => {
         onSubmit={handleRegister}
       >
         <h2 className="text-2xl font-semibold text-center mb-6">Register</h2>
-        {error && (
-          <p className="text-red-500 text-center">{error}</p>
-        )}
+        {error && <p className="text-red-500 text-center">{error}</p>}
+        
+        {/* Username */}
         <div className="mb-4">
-          <label
-            htmlFor="username"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Username
-          </label>
+          <label className="block text-sm font-medium text-gray-700">Username</label>
           <input
             type="text"
-            id="username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
             required
           />
         </div>
+
+        {/* Email */}
         <div className="mb-4">
-          <label
-            htmlFor="email"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Email
-          </label>
+          <label className="block text-sm font-medium text-gray-700">Email</label>
           <input
             type="email"
-            id="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
             required
           />
         </div>
+
+        {/* Phone Number */}
         <div className="mb-4">
-          <label
-            htmlFor="phoneNumber"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Phone Number
-          </label>
+          <label className="block text-sm font-medium text-gray-700">Phone Number</label>
           <input
             type="text"
-            id="phoneNumber"
             value={phone_number}
             onChange={(e) => setPhoneNumber(e.target.value)}
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
             required
           />
         </div>
+
+        {/* Password */}
         <div className="mb-4">
-          <label
-            htmlFor="password"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Password
-          </label>
+          <label className="block text-sm font-medium text-gray-700">Password</label>
           <input
             type="password"
-            id="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
@@ -120,48 +107,22 @@ const RegisterPage = () => {
           />
         </div>
 
-        {/* Role Selection */}
+        {/* Role */}
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">
-            Role
-          </label>
-          <div className="flex items-center">
-            <label className="mr-4">
-              <input
-                type="radio"
-                id="customer"
-                name="role"
-                value="Customer"
-                checked={role === "Customer"}
-                onChange={() => setRole("Customer")}
-                className="mr-2"
-              />
-              Customer
-            </label>
-            <label className="mr-4">
-              <input
-                type="radio"
-                id="driver"
-                name="role"
-                value="Driver"
-                checked={role === "Driver"}
-                onChange={() => setRole("Driver")}
-                className="mr-2"
-              />
-              Driver
-            </label>
-            <label>
-              <input
-                type="radio"
-                id="admin"
-                name="role"
-                value="Admin"
-                checked={role === "Admin"}
-                onChange={() => setRole("Admin")}
-                className="mr-2"
-              />
-              Admin
-            </label>
+          <label className="block text-sm font-medium text-gray-700">Role</label>
+          <div className="flex space-x-4 mt-1">
+            {["Customer", "Driver", "Admin"].map((r) => (
+              <label key={r}>
+                <input
+                  type="radio"
+                  value={r}
+                  checked={role === r}
+                  onChange={() => setRole(r)}
+                  className="mr-1"
+                />
+                {r}
+              </label>
+            ))}
           </div>
         </div>
 

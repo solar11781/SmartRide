@@ -66,3 +66,4 @@ smartride/
 │── README.md
 │── ...
 ```
+npm install express mysql2 cors dotenv bcrypt jsonwebtoken

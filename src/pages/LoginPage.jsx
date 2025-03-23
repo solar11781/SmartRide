@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const LoginPage = ({ setIsLoggedIn }) => {
   const [username, setUsername] = useState("");
@@ -11,32 +12,27 @@ const LoginPage = ({ setIsLoggedIn }) => {
     e.preventDefault();
 
     try {
-      const response = await fetch("http://localhost/api_user.php", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ username, password }),
+      const response = await axios.post("http://localhost:5001/api/auth/login", {
+        username,
+        password,
       });
 
-      const data = await response.json();
+      const data = response.data;
 
-      console.log("Response Data:", data);
+      // Save user info in localStorage
+      localStorage.setItem("user_id", data.user.id);
+      localStorage.setItem("username", data.user.username);
+      localStorage.setItem("role", data.user.role);
+      localStorage.setItem("token", data.token); // Optional: Store JWT token
 
-      if (data) {
-        localStorage.setItem("user_id", data.user_id);
-        localStorage.setItem("username", data.username);
-        localStorage.setItem("email", data.email);
-        localStorage.setItem("phone_number", data.phone_number);
-        localStorage.setItem("role", data.role);
-        setError("");
-        setIsLoggedIn(true);
-        navigate("/dashboard/book-ride");
-      } else {
-        setError("Invalid credentials. Please try again.");
-      }
+      setError("");
+      setIsLoggedIn(true);
+      navigate("/dashboard/book-ride");
     } catch (error) {
-      setError("An error occurred: " + error.message);
+      console.error(error);
+      setError(
+        error.response?.data?.message || "Login failed. Please try again."
+      );
     }
   };
 
