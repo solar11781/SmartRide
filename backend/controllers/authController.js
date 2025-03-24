@@ -1,14 +1,16 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const db = require('../config/db'); // ✅ Fix: Import the DB connection
 const User = require('../models/userModel');
 
+// ✅ REGISTER FUNCTION
 const register = async (req, res) => {
   let { username, email, phone_number, password, role } = req.body;
 
   // 0. Sanitize input
   username = username?.trim();
   email = email?.trim().toLowerCase();
-  phone_number = phone_number?.replace(/\D/g, ""); // remove all non-digits
+  phone_number = phone_number?.replace(/\D/g, ""); // Remove non-digits
   password = password?.trim();
   role = role?.trim();
 
@@ -28,8 +30,7 @@ const register = async (req, res) => {
   if (!strongPasswordPattern.test(password)) {
     return res.status(400).json({
       success: false,
-      message:
-        "Password must be at least 8 characters, include uppercase, lowercase, number, and special character."
+      message: "Password must be at least 8 characters, include uppercase, lowercase, number, and special character."
     });
   }
 
@@ -58,11 +59,12 @@ const register = async (req, res) => {
 
     return res.status(200).json({ success: true, message: "Account created successfully!" });
   } catch (error) {
-    console.error(error);
+    console.error("❌ Registration Error:", error);
     return res.status(500).json({ success: false, message: "Server error. Please try again." });
   }
 };
 
+// ✅ LOGIN FUNCTION
 const login = (req, res) => {
   const { username, password } = req.body;
 

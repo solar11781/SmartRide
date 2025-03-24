@@ -111,7 +111,7 @@ const RegisterPage = () => {
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700">Role</label>
           <div className="flex space-x-4 mt-1">
-            {["Customer", "Driver", "Admin"].map((r) => (
+            {["Customer", "Driver"].map((r) => (
               <label key={r}>
                 <input
                   type="radio"
