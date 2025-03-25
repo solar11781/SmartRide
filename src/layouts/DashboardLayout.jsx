@@ -1,11 +1,9 @@
 // src/layouts/DashboardLayout.jsx
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import PassengerDashboard from "../pages/dashboard/PassengerDashboard";
-import DriverDashboard from "../pages/dashboard/DriverDashboard";
-import AdminDashboard from "../pages/dashboard/AdminDashboard";
-
-
+import PassengerDashboard from "../pages/passenger/PassengerDashboard";
+import DriverDashboard from "../pages/driver/DriverDashboard";
+import AdminDashboard from "../pages/admin/AdminDashboard";
 
 const DashboardLayout = ({ setIsLoggedIn }) => {
   const navigate = useNavigate();
@@ -43,7 +41,5 @@ const DashboardLayout = ({ setIsLoggedIn }) => {
       return <p className="text-center mt-10">Invalid role.</p>;
   }
 };
-
-
 
 export default DashboardLayout;

@@ -53,7 +53,7 @@ const DriverDashboard = ({ user, onLogout }) => {
 
           <button
             onClick={onLogout}
-            className="flex items-center gap-2 text-red-500 hover:text-red-700 mt-10"
+            className="flex cursor-pointer items-center gap-2 text-red-500 hover:text-red-700 mt-10"
           >
             <FaSignOutAlt /> Logout
           </button>

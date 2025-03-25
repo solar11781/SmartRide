@@ -6,7 +6,7 @@ const createUser = (email, username, role, phone_number, password, callback) => 
   db.query(sql, [email, username, role, phone_number, password], callback);
 };
 
-// Find user by username or email
+// Find user by username
 const findUserByUsername = (username, callback) => {
   const sql = 'SELECT * FROM users WHERE username = ?';
   db.query(sql, [username], callback);

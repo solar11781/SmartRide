@@ -43,7 +43,7 @@ const AdminDashboard = ({ user, onLogout }) => {
 
         <button
           onClick={onLogout}
-          className="flex items-center space-x-2 text-red-500 hover:text-red-400"
+          className="flex cursor-pointer items-center space-x-2 text-red-500 hover:text-red-400"
         >
           <LogOut size={18} /> <span>Logout</span>
         </button>

@@ -1,13 +1,25 @@
-import { Link } from "react-router-dom";
-import { FaRoute, FaHistory, FaMoneyBillWave, FaBell, FaSignOutAlt } from "react-icons/fa";
+import { Link, Outlet } from "react-router-dom";
+import {
+  FaRoute,
+  FaHistory,
+  FaMoneyBillWave,
+  FaBell,
+  FaSignOutAlt,
+} from "react-icons/fa";
 
-const PassengerDashboard = ({ username, onLogout }) => {
+const PassengerDashboard = ({ user, onLogout }) => {
+  const { email, username, role, phone_number } = user;
+
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       {/* Header */}
       <header className="bg-blue-600 text-white p-4 shadow-md flex justify-between items-center">
-        <h1 className="text-xl font-bold">🚕 SmartRide - Passenger Dashboard</h1>
-        <div className="text-sm">Welcome, <span className="font-semibold">{username}</span></div>
+        <h1 className="text-xl font-bold">
+          🚕 SmartRide - Passenger Dashboard
+        </h1>
+        <div className="text-sm">
+          Welcome, <span className="font-semibold">{username}</span>
+        </div>
       </header>
 
       {/* Main Content */}
@@ -46,16 +58,16 @@ const PassengerDashboard = ({ username, onLogout }) => {
 
           <button
             onClick={onLogout}
-            className="flex items-center space-x-2 text-red-500 hover:text-red-700 mt-10"
+            className="flex cursor-pointer items-center space-x-2 text-red-500 hover:text-red-700 mt-10"
           >
             <FaSignOutAlt /> <span>Logout</span>
           </button>
         </aside>
 
-        {/* Placeholder for main content */}
-        <main className="flex-1 bg-gray-100 p-6">
-          <h2 className="text-xl font-semibold mb-4">Select an option from the sidebar</h2>
-        </main>
+        {/* Content Area */}
+        <div className="flex-1 p-6 overflow-y-auto">
+          <Outlet />
+        </div>
       </div>
     </div>
   );
