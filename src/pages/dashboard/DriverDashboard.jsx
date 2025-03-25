@@ -1,23 +1,14 @@
-import { Link, Outlet, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { FaCarSide, FaListAlt, FaBell, FaSignOutAlt, FaUserCircle } from "react-icons/fa";
+import { Link, Outlet } from "react-router-dom";
+import {
+  FaCarSide,
+  FaListAlt,
+  FaBell,
+  FaSignOutAlt,
+  FaUserCircle,
+} from "react-icons/fa";
 
-const DriverDashboard = () => {
-  const navigate = useNavigate();
-  const [user, setUser] = useState({});
-
-  useEffect(() => {
-    const username = localStorage.getItem("username");
-    const role = localStorage.getItem("role");
-
-    if (role !== "Driver") navigate("/login");
-    setUser({ username, role });
-  }, [navigate]);
-
-  const logout = () => {
-    localStorage.clear();
-    navigate("/login");
-  };
+const DriverDashboard = ({ user, onLogout }) => {
+  const { email, username, role, phone_number } = user;
 
   return (
     <div className="flex h-screen bg-gray-100">
@@ -25,8 +16,10 @@ const DriverDashboard = () => {
       <div className="w-72 bg-white border-r p-5 shadow-lg">
         <div className="text-center mb-6">
           <FaUserCircle size={50} className="mx-auto text-blue-500" />
-          <h2 className="text-lg font-semibold mt-2">{user.username}</h2>
-          <p className="text-sm text-gray-500">Driver</p>
+          <h2 className="text-lg font-semibold mt-2">{username}</h2>
+          <p className="text-sm text-gray-500">{role.toUpperCase()}</p>
+          <p className="text-sm text-gray-500">{email}</p>
+          <p className="text-sm text-gray-500">{phone_number}</p>
         </div>
 
         <nav className="flex flex-col gap-4">
@@ -51,8 +44,15 @@ const DriverDashboard = () => {
             <FaBell /> Notifications
           </Link>
 
+          <Link
+            to="/dashboard/profile"
+            className="flex items-center gap-2 text-gray-700 hover:text-blue-600"
+          >
+            <FaBell /> Profile
+          </Link>
+
           <button
-            onClick={logout}
+            onClick={onLogout}
             className="flex items-center gap-2 text-red-500 hover:text-red-700 mt-10"
           >
             <FaSignOutAlt /> Logout

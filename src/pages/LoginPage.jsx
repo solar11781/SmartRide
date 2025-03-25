@@ -22,15 +22,19 @@ const LoginPage = ({ setIsLoggedIn }) => {
 
       const data = response.data;
 
+      console.log(data);
+
       // Save user info in localStorage
       localStorage.setItem("user_id", data.user.id);
+      localStorage.setItem("email", data.user.email);
       localStorage.setItem("username", data.user.username);
       localStorage.setItem("role", data.user.role);
+      localStorage.setItem("phone_number", data.user.phone_number);
       localStorage.setItem("token", data.token); // Optional: Store JWT token
 
       setError("");
       setIsLoggedIn(true);
-      navigate("/dashboard/book-ride");
+      navigate("/dashboard/my-rides");
     } catch (error) {
       console.error(error);
       setError(

@@ -2,22 +2,8 @@ import { Link, Outlet, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Bell, LogOut, BarChart3, Users2, ShieldCheck } from "lucide-react";
 
-const AdminDashboard = () => {
-  const navigate = useNavigate();
-  const [username, setUsername] = useState("");
-
-  useEffect(() => {
-    const storedUsername = localStorage.getItem("username");
-    const storedRole = localStorage.getItem("role");
-
-    if (storedRole !== "Admin") navigate("/login");
-    setUsername(storedUsername || "");
-  }, [navigate]);
-
-  const logout = () => {
-    localStorage.clear();
-    navigate("/login");
-  };
+const AdminDashboard = ({ user, onLogout }) => {
+  const { email, username, role, phone_number } = user;
 
   return (
     <div className="flex h-screen">
@@ -28,23 +14,35 @@ const AdminDashboard = () => {
           <p className="text-sm mb-6 text-gray-400">Welcome, {username}</p>
 
           <nav className="flex flex-col space-y-4">
-            <Link to="/dashboard/admin/users" className="flex items-center space-x-2 hover:text-blue-400">
+            <Link
+              to="/dashboard/admin/users"
+              className="flex items-center space-x-2 hover:text-blue-400"
+            >
               <Users2 size={18} /> <span>Manage Users</span>
             </Link>
-            <Link to="/dashboard/admin/reports" className="flex items-center space-x-2 hover:text-blue-400">
+            <Link
+              to="/dashboard/admin/reports"
+              className="flex items-center space-x-2 hover:text-blue-400"
+            >
               <BarChart3 size={18} /> <span>Reports / Analytics</span>
             </Link>
-            <Link to="/dashboard/admin/approvals" className="flex items-center space-x-2 hover:text-blue-400">
+            <Link
+              to="/dashboard/admin/approvals"
+              className="flex items-center space-x-2 hover:text-blue-400"
+            >
               <ShieldCheck size={18} /> <span>Driver Approvals</span>
             </Link>
-            <Link to="/dashboard/notifications" className="flex items-center space-x-2 hover:text-blue-400">
+            <Link
+              to="/dashboard/notifications"
+              className="flex items-center space-x-2 hover:text-blue-400"
+            >
               <Bell size={18} /> <span>Notifications</span>
             </Link>
           </nav>
         </div>
 
         <button
-          onClick={logout}
+          onClick={onLogout}
           className="flex items-center space-x-2 text-red-500 hover:text-red-400"
         >
           <LogOut size={18} /> <span>Logout</span>

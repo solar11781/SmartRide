@@ -12,13 +12,15 @@ const DashboardLayout = ({ setIsLoggedIn }) => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
+    const email = localStorage.getItem("email");
     const username = localStorage.getItem("username");
     const role = localStorage.getItem("role");
+    const phone_number = localStorage.getItem("phone_number");
 
     if (!username || !role) {
       navigate("/login");
     } else {
-      setUser({ username, role });
+      setUser({ email, username, role, phone_number });
     }
   }, [navigate]);
 
