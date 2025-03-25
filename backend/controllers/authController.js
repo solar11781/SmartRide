@@ -5,7 +5,7 @@ const User = require("../models/userModel");
 
 // ✅ REGISTER FUNCTION
 const register = async (req, res) => {
-  let { username, email, phone_number, password, role } = req.body;
+  let { username, email, phone_number, password, role, verified } = req.body;
 
   // 0. Sanitize input
   username = username?.trim();
@@ -65,8 +65,8 @@ const register = async (req, res) => {
     await db
       .promise()
       .query(
-        "INSERT INTO users (username, email, phone_number, password, role) VALUES (?, ?, ?, ?, ?)",
-        [username, email, phone_number, hashedPassword, role]
+        "INSERT INTO users (username, email, phone_number, password, role, verified) VALUES (?, ?, ?, ?, ?, 0)",
+        [username, email, phone_number, hashedPassword, role, verified]
       );
 
     return res
@@ -101,6 +101,7 @@ const login = (req, res) => {
           username: user.username,
           role: user.role,
           phone_number: user.phone_number,
+          verified: user.verified
         },
         "secretkey",
         { expiresIn: "1h" }
@@ -115,10 +116,28 @@ const login = (req, res) => {
           username: user.username,
           role: user.role,
           phone_number: user.phone_number,
+          verified: user.verified
         },
       });
     });
   });
 };
 
-module.exports = { register, login };
+// GET ALL USERS FUNCTION
+const getAllUsers = (req, res) => {
+  User.getAllUsers((err, results) => {
+    if (err) return res.status(500).json({ message: "Server error" });
+    res.status(200).json(results);
+  });
+};
+
+// VERIFY USER FUNCTION
+const verifyUser = (req, res) => {
+  const { user_id } = req.body;
+  User.verifyUser(user_id, (err, results) => {
+    if (err) return res.status(500).json({ message: "Server error" });
+    res.status(200).json({ message: "User verified successfully" });
+  });
+};
+
+module.exports = { register, login, getAllUsers, verifyUser };

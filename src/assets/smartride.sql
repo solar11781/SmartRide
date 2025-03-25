@@ -12,6 +12,7 @@ CREATE TABLE users (
   `role` ENUM('customer', 'driver', 'admin') NOT NULL,
   `phone_number` VARCHAR(15) NOT NULL,
   `password` varchar(255) NOT NULL,
+  `verified` BOOLEAN NOT NULL DEFAULT 0,
   PRIMARY KEY (`user_id`),
   UNIQUE (`email`),
   UNIQUE (`username`),
@@ -22,5 +23,5 @@ CREATE TABLE users (
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`user_id`, `email`, `username`, `role`,`phone_number`, `password`) VALUES
-(1, 'admin@gmail.com', 'admin', 'Admin', '0123456789', '$2b$10$8RZiEPxolfO5U4vl.mw59u1rSqjDUXdAj/OosfZeLhkNRmhQG0kpO');
+INSERT INTO `users` (`user_id`, `email`, `username`, `role`,`phone_number`, `password`, `verified`) VALUES
+(1, 'admin@gmail.com', 'admin', 'Admin', '0123456789', '$2b$10$8RZiEPxolfO5U4vl.mw59u1rSqjDUXdAj/OosfZeLhkNRmhQG0kpO', 1);

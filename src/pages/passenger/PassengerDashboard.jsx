@@ -8,7 +8,7 @@ import {
 } from "react-icons/fa";
 
 const PassengerDashboard = ({ user, onLogout }) => {
-  const { email, username, role, phone_number } = user;
+  const { email, username, role, phone_number, verified } = user;
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">

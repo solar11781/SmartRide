@@ -8,7 +8,9 @@ import {
 } from "react-icons/fa";
 
 const DriverDashboard = ({ user, onLogout }) => {
-  const { email, username, role, phone_number } = user;
+  const { email, username, role, phone_number, verified } = user;
+
+  const verified_status = verified === 1 ? "Verified" : "Not Verified";
 
   return (
     <div className="flex h-screen bg-gray-100">
@@ -20,6 +22,7 @@ const DriverDashboard = ({ user, onLogout }) => {
           <p className="text-sm text-gray-500">{role.toUpperCase()}</p>
           <p className="text-sm text-gray-500">{email}</p>
           <p className="text-sm text-gray-500">{phone_number}</p>
+          <p className="text-sm text-gray-500">Status: {verified_status}</p>
         </div>
 
         <nav className="flex flex-col gap-4">
