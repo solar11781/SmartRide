@@ -54,6 +54,7 @@ function App() {
             isLoggedIn ? <Navigate to="/dashboard" /> : <Navigate to="/login" />
           }
         />
+           <Route path="ride-history" element={<RideHistoryPage />} />
 
         {/* Dashboard layout with role-based nested rendering */}
         <Route
@@ -66,8 +67,7 @@ function App() {
           <Route path="profile" element={<ProfilePage />} />
           <Route path="book-ride" element={<BookRidePage />} />
           <Route path="ride-history" element={<RideHistoryPage />} />
-          <Route path="payments" element={<PaymentsPage />} />
-
+          <Route path="payment/:ride_id" element={<PaymentsPage />} />
           {/* Admin Dashboard nested routes */}
           <Route path="admin">
             <Route path="users" element={<ManageUsers />} />

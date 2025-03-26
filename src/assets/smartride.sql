@@ -19,6 +19,28 @@ CREATE TABLE users (
   UNIQUE (`phone_number`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+
+CREATE TABLE rides (
+  ride_id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  vehicle_type VARCHAR(20),
+  pickup_location VARCHAR(255),
+  dropoff_location VARCHAR(255),
+  status ENUM('Pending', 'Accepted', 'Completed', 'Cancelled') DEFAULT 'Pending',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
+
+
+CREATE TABLE payments (
+  payment_id INT AUTO_INCREMENT PRIMARY KEY,
+  ride_id INT,
+  amount DECIMAL(10,2),
+  method VARCHAR(50),
+  status VARCHAR(20),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 --
 -- Dumping data for table `users`
 --
