@@ -77,12 +77,14 @@ const RideHistoryPage = () => {
               <p className="text-sm text-gray-600">🕒 ETA: {new Date(ride.eta).toLocaleTimeString()}</p>
 
               <div className="mt-3 flex gap-4">
-                <button
-                  onClick={() => navigate(`/dashboard/payment/${ride.ride_id}`)}
-                  className="px-4 py-1 bg-blue-500 hover:bg-blue-600 text-white rounded-md text-sm"
-                >
-                  View Payment
-                </button>
+                {ride.status === "Pending" && (
+                  <button
+                    onClick={() => navigate(`/dashboard/payment/${ride.ride_id}`)}
+                    className="px-4 py-1 bg-green-500 hover:bg-green-600 text-white rounded-md text-sm"
+                  >
+                    Make Payment
+                  </button>
+                )}
                 <button
                   onClick={() => handleDelete(ride.ride_id)}
                   className="px-4 py-1 bg-red-500 hover:bg-red-600 text-white rounded-md text-sm"

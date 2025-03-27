@@ -1,23 +1,13 @@
 const express = require("express");
 const router = express.Router();
-const db = require("../config/db");
 
-// 🧾 GET /api/payment/:ride_id
-router.get("/:ride_id", async (req, res) => {
-  const { ride_id } = req.params;
+// ✅ Correctly import both controllers from paymentController.js
+const { getPaymentByRideId, makePayment } = require("../controllers/paymentController");
 
-  try {
-    const [result] = await db.promise().query("SELECT * FROM payments WHERE ride_id = ?", [ride_id]);
+// 📌 Get payment info for a specific ride
+router.get("/:ride_id", getPaymentByRideId);
 
-    if (result.length === 0) {
-      return res.status(404).json({ success: false, message: "Payment not found" });
-    }
-
-    return res.status(200).json({ success: true, payment: result[0] });
-  } catch (error) {
-    console.error("Error fetching payment:", error);
-    res.status(500).json({ success: false, message: "Server error" });
-  }
-});
+// 📌 Make payment for a ride
+router.post("/pay/:ride_id", makePayment); // ✅ make sure makePayment is defined
 
 module.exports = router;

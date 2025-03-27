@@ -13,7 +13,7 @@ app.use(express.json());
 // ✅ Route Imports
 const authRoutes = require("./routes/auth");
 const rideRoutes = require("./routes/ride");
-const paymentRoutes = require("./routes/payment");
+const paymentRoutes = require("./routes/payment"); // ✅ Declare only once
 
 // ✅ API Routes
 app.use("/api/auth", authRoutes);
