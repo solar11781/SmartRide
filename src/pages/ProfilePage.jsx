@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 const ProfilePage = ({ setIsLoggedIn }) => {
@@ -6,188 +6,210 @@ const ProfilePage = ({ setIsLoggedIn }) => {
 
   // Get user data from localStorage
   const user_id = localStorage.getItem("user_id");
-  const [username, setUsername] = useState(localStorage.getItem("username"));
-  const [phone_number, setPhoneNumber] = useState(
-    localStorage.getItem("phone_number")
-  );
-  const [email, setEmail] = useState(localStorage.getItem("email"));
-  const raw_type = localStorage.getItem("role");
-  const type =
-    String(raw_type).charAt(0).toUpperCase() + String(raw_type).slice(1);
+  const [username, setUsername] = useState(localStorage.getItem("username") || "");
+  const [phone_number, setPhoneNumber] = useState(localStorage.getItem("phone_number") || "");
+  const [email, setEmail] = useState(localStorage.getItem("email") || "");
+  const type = localStorage.getItem("role");
 
-  // Handle logout functionality
-  const handleLogout = () => {
-    localStorage.clear();
-    setIsLoggedIn(false);
-    navigate("/login");
+  // Driver-specific details
+  const [driverDetails, setDriverDetails] = useState(null);
+
+  // Fetch driver details if the user is a driver
+  useEffect(() => {
+    if (type === "driver") {
+      fetch(`http://localhost:5001/api/auth/drivers/${user_id}`)
+        .then((response) => response.json())
+        .then((data) => setDriverDetails(data))
+        .catch((error) =>
+          console.error("Error fetching driver details:", error)
+        );
+    }
+  }, [type, user_id]);
+
+  // Handle save changes
+  const handleSaveChanges = () => {
+    fetch("http://localhost:5001/api/auth/users", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ user_id, username, email, phone_number }),
+    })
+      .then((response) => response.json())
+      .then((data) => alert(data.message))
+      .catch((error) => console.error("Error saving changes:", error));
   };
 
-  const handleSaveChanges = async () => {
-    try {
-      const response = await fetch(
-        `http://localhost/apis.php/user_id/${user_id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            username,
-            email,
-            phone_number,
-          }),
-        }
-      );
-
-      const data = await response.json();
-      console.log("Update Response:", data);
-
-      if (data == 1) {
-        // Update localStorage with new values
-        localStorage.setItem("username", username);
-        localStorage.setItem("email", email);
-        localStorage.setItem("phone_number", phone_number);
-
-        console.log("Profile updated successfully!");
-      } else {
-        console.error(
-          "Failed to update profile:",
-          data.message || "Unknown error."
-        );
-      }
-    } catch (error) {
-      console.error("Error updating profile:", error);
-    }
-  };
-
-  const handleDeleteAccount = async () => {
-    if (
-      !window.confirm(
-        "Are you sure you want to delete your account? This action cannot be undone."
-      )
-    ) {
-      return; // Stop execution if user cancels deletion
-    }
-
-    try {
-      const response = await fetch(
-        `http://localhost/apis.php/user_id/${user_id}`,
-        {
-          method: "DELETE",
-          body: JSON.stringify({
-            user_id,
-          }),
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      const data = await response.json();
-      console.log("Delete Response:", data);
-
-      if (data == 1) {
-        console.log("Your account has been deleted.");
-        localStorage.clear();
-        setIsLoggedIn(false);
-
-        // Redirect to login page
-        navigate("/login");
-      } else {
-        console.error(
-          "Failed to delete account:",
-          data.message || "Unknown error."
-        );
-      }
-    } catch (error) {
-      console.error("Error deleting account:", error);
+  // Handle delete account
+  const handleDeleteAccount = () => {
+    if (window.confirm("Are you sure you want to delete your account?")) {
+      fetch(`http://localhost:5001/api/auth/users/${user_id}`, {
+        method: "DELETE",
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          alert(data.message);
+          localStorage.clear();
+          setIsLoggedIn(false);
+          navigate("/login", { replace: true });
+        })
+        .catch((error) => console.error("Error deleting account:", error));
     }
   };
 
   return (
-    <div>
-      <h3 className="text-xl font-semibold mb-4">Your Profile</h3>
+    <div className="p-6 max-w-4xl mx-auto">
+      <h3 className="text-2xl font-bold mb-6 text-center">Your Profile</h3>
 
-      {/* Username */}
-      <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700">
-          Username
-        </label>
-        <input
-          type="text"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
-          placeholder="Enter your username"
-        />
+      {/* User Information */}
+      <div className="mb-6">
+        <h4 className="text-lg font-semibold mb-2">General Information</h4>
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Username
+            </label>
+            <input
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Email
+            </label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Phone Number
+            </label>
+            <input
+              type="text"
+              value={phone_number}
+              onChange={(e) => setPhoneNumber(e.target.value)}
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Role
+            </label>
+            <input
+              type="text"
+              value={type}
+              disabled
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100"
+            />
+          </div>
+        </div>
       </div>
 
-      {/* Phone Number */}
-      <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700">
-          Phone Number
-        </label>
-        <input
-          type="text"
-          value={phone_number}
-          onChange={(e) => setPhoneNumber(e.target.value)}
-          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
-          placeholder="Enter your phone number"
-        />
+      {/* Driver Details */}
+      {type === "driver" && driverDetails && (
+        <div className="mb-6">
+          <h4 className="text-lg font-semibold mb-2">Driver Details</h4>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                ID Card
+              </label>
+              <img
+                src={`http://localhost:5001/${driverDetails.id_card}`}
+                alt="ID Card"
+                className="mt-1 w-full h-80 object-contain border border-gray-300 rounded-md"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Driver License
+              </label>
+              <img
+                src={`http://localhost:5001/${driverDetails.driver_license}`}
+                alt="Driver License"
+                className="mt-1 w-full h-80 object-contain border border-gray-300 rounded-md"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Insurance Document
+              </label>
+              <img
+                src={`http://localhost:5001/${driverDetails.insurance_document}`}
+                alt="Insurance Document"
+                className="mt-1 w-full h-80 object-contain border border-gray-300 rounded-md"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                License Plate
+              </label>
+              <input
+                type="text"
+                value={driverDetails.license_plate}
+                disabled
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Vehicle Type
+              </label>
+              <input
+                type="text"
+                value={driverDetails.vehicle_type}
+                disabled
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Vehicle Color
+              </label>
+              <input
+                type="text"
+                value={driverDetails.vehicle_color}
+                disabled
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Verification Status
+              </label>
+              <input
+                type="text"
+                value={driverDetails.is_verified ? "Verified" : "Not Verified"}
+                disabled
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100"
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Save Changes and Delete Account Buttons */}
+      <div className="flex justify-between mt-6">
+        <button
+          type="button"
+          onClick={handleSaveChanges}
+          className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-700"
+        >
+          Save Changes
+        </button>
+        <button
+          type="button"
+          onClick={handleDeleteAccount}
+          className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-700"
+        >
+          Delete Account
+        </button>
       </div>
-
-      {/* Email */}
-      <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700">Email</label>
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
-          placeholder="Enter your email"
-        />
-      </div>
-
-      {/* User's Role */}
-      <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700">
-          User's Role
-        </label>
-        <input
-          type="text"
-          value={type}
-          disabled
-          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100"
-          placeholder="User's role (customer, driver, admin)"
-        />
-      </div>
-
-      {/* Save Changes Button */}
-      <button
-        type="button"
-        onClick={handleSaveChanges}
-        className="w-full py-2 cursor-pointer bg-blue-500 hover:bg-blue-700 text-white rounded-lg"
-      >
-        Save Changes
-      </button>
-
-      {/* Logout Button */}
-      <button
-        type="button"
-        onClick={handleLogout}
-        className="w-full py-2 cursor-pointer mt-4 bg-red-500 hover:bg-red-700 text-white rounded-lg"
-      >
-        Log Out
-      </button>
-
-      {/* Delete account Button */}
-      <button
-        type="button"
-        onClick={handleDeleteAccount}
-        className="w-full py-2 cursor-pointer mt-4 bg-red-500 hover:bg-red-700 text-white rounded-lg"
-      >
-        Delete account
-      </button>
     </div>
   );
 };

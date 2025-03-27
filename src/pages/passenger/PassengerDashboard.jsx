@@ -8,7 +8,7 @@ import {
 } from "react-icons/fa";
 
 const PassengerDashboard = ({ user, onLogout }) => {
-  const { email, username, role, phone_number, verified } = user;
+  const { username, role} = user;
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
@@ -53,6 +53,12 @@ const PassengerDashboard = ({ user, onLogout }) => {
               className="flex items-center space-x-2 text-blue-600 hover:text-blue-800"
             >
               <FaBell /> <span>Notifications</span>
+            </Link>
+            <Link
+              to="/dashboard/profiles"
+              className="flex items-center space-x-2 text-blue-600 hover:text-blue-800"
+            >
+              <FaBell /> <span>Profiles</span>
             </Link>
           </nav>
 

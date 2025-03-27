@@ -63,7 +63,7 @@ function App() {
           <Route path="my-rides" element={<MyRides />} />
           <Route path="register-vehicle" element={<RegisterVehicle />} />
           <Route path="notifications" element={<Notifications />} />
-          <Route path="profile" element={<ProfilePage />} />
+          <Route path="profile" element={<ProfilePage setIsLoggedIn={setIsLoggedIn} />} />
           <Route path="book-ride" element={<BookRidePage />} />
           <Route path="ride-history" element={<RideHistoryPage />} />
           <Route path="payments" element={<PaymentsPage />} />

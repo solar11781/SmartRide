@@ -93,6 +93,42 @@ const fetchAllDrivers = (callback) => {
   db.query(sql, callback);
 };
 
+// Fetch driver details by user_id
+const getDriverDetailsById = (user_id, callback) => {
+  const sql = `
+    SELECT 
+      id_card, 
+      driver_license, 
+      insurance_document, 
+      license_plate, 
+      vehicle_type, 
+      vehicle_color, 
+      is_verified 
+    FROM drivers_details 
+    WHERE driver_id = ?
+  `;
+  db.query(sql, [user_id], callback);
+};
+
+// Update user details
+const updateUserDetails = (user_id, username, email, phone_number, callback) => {
+  const sql = `
+    UPDATE users 
+    SET username = ?, email = ?, phone_number = ? 
+    WHERE user_id = ?
+  `;
+  db.query(sql, [username, email, phone_number, user_id], callback);
+};
+
+// Delete user account
+const deleteUserAccount = (user_id, callback) => {
+  const sql = `
+    DELETE FROM users 
+    WHERE user_id = ?
+  `;
+  db.query(sql, [user_id], callback);
+};
+
 module.exports = {
   createUser,
   createDriverDetails,
@@ -101,4 +137,7 @@ module.exports = {
   verifyDriver,
   fetchAllUsers,
   fetchAllDrivers,
+  getDriverDetailsById,
+  updateUserDetails,
+  deleteUserAccount,
 };

@@ -3,8 +3,8 @@ const jwt = require("jsonwebtoken");
 const db = require("../config/db");
 const User = require("../models/userModel");
 const multer = require("multer");
-const path = require("path");
 const fs = require("fs");
+const path = require("path");
 
 // Configure multer for file uploads
 const storage = multer.diskStorage({
@@ -271,4 +271,102 @@ const verifyDriver = (req, res) => {
   });
 };
 
-module.exports = { register, login, getAllUsers, getAllDrivers, verifyDriver };
+const getDriverDetails = (req, res) => {
+  const { user_id } = req.params;
+
+  User.getDriverDetailsById(user_id, (err, results) => {
+    if (err) {
+      console.error("❌ Error fetching driver details:", err);
+      return res.status(500).json({ message: "Server error" });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ message: "Driver details not found" });
+    }
+
+    res.status(200).json(results[0]);
+  });
+};
+
+const updateUser = (req, res) => {
+  const { user_id, username, email, phone_number } = req.body;
+
+  User.updateUserDetails(
+    user_id,
+    username,
+    email,
+    phone_number,
+    (err, results) => {
+      if (err) {
+        console.error("❌ Error updating user details:", err);
+        return res.status(500).json({ message: "Server error" });
+      }
+
+      res.status(200).json({ message: "User details updated successfully" });
+    }
+  );
+};
+
+const deleteUser = (req, res) => {
+  const { user_id } = req.params;
+
+  // Fetch the user's document paths
+  User.getDriverDetailsById(user_id, (err, driverDetails) => {
+    if (err) {
+      console.error("❌ Error fetching driver details:", err);
+      return res.status(500).json({ message: "Server error" });
+    }
+
+    // TODO: for some fucking reason, this part doesnt work and doesnt even log anything out
+    console.log("Driver Details:", driverDetails); // Log the driver details
+
+    // Delete the document files if they exist
+    if (driverDetails) {
+      const { id_card, driver_license, insurance_document } = driverDetails;
+
+      [id_card, driver_license, insurance_document].forEach((filePath) => {
+        if (filePath) {
+          const fullPath = path.join(__dirname, "../", filePath);
+
+          console.log("Full Path:", fullPath);
+
+          // Check if the file exists before attempting to delete
+          if (fs.existsSync(fullPath)) {
+            fs.unlink(fullPath, (err) => {
+              if (err) {
+                console.log(`❌ Error deleting file ${filePath}:`, err);
+              } else {
+                console.log(`✅ Successfully deleted file: ${filePath}`);
+              }
+            });
+          } else {
+            console.log(`⚠️ File not found: ${filePath}`);
+          }
+        }
+      });
+    }
+
+    // Delete the user account
+    User.deleteUserAccount(user_id, (err, results) => {
+      if (err) {
+        console.error("❌ Error deleting user account:", err);
+        return res.status(500).json({ message: "Server error" });
+      }
+
+      res
+        .status(200)
+        .json({ message: "User account and documents deleted successfully" });
+    });
+  });
+};
+
+module.exports = {
+  register,
+  login,
+  getAllUsers,
+  getAllDrivers,
+  verifyDriver,
+  getDriverDetails,
+  updateUser,
+  deleteUser,
+};

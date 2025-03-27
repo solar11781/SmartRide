@@ -41,11 +41,19 @@ CREATE TABLE drivers_details (
 
 INSERT INTO `users` (`user_id`, `username`, `email`, `phone_number`, `password`, `role`) VALUES
 (1, 'admin', 'admin@gmail.com', '0123456789', '$2b$10$8RZiEPxolfO5U4vl.mw59u1rSqjDUXdAj/OosfZeLhkNRmhQG0kpO', 'admin'),
-(2, 'driver', 'driver@gmail.com', '0123456788', '$2b$10$8RZiEPxolfO5U4vl.mw59u1rSqjDUXdAj/OosfZeLhkNRmhQG0kpO', 'driver');
+(2, 'driver', 'driver@gmail.com', '0123456788', '$2b$10$8RZiEPxolfO5U4vl.mw59u1rSqjDUXdAj/OosfZeLhkNRmhQG0kpO', 'driver'),
+(3, 'driver2', 'driver2@gmail.com', '0123456787', '$2b$10$8RZiEPxolfO5U4vl.mw59u1rSqjDUXdAj/OosfZeLhkNRmhQG0kpO', 'driver'),
+(4, 'driver3', 'driver3@gmail.com', '0123456786', '$2b$10$8RZiEPxolfO5U4vl.mw59u1rSqjDUXdAj/OosfZeLhkNRmhQG0kpO', 'driver'),
+(5, 'driver4', 'driver4@gmail.com', '0123456785', '$2b$10$8RZiEPxolfO5U4vl.mw59u1rSqjDUXdAj/OosfZeLhkNRmhQG0kpO', 'driver'),
+(6, 'driver5', 'driver5@gmail.com', '0123456784', '$2b$10$8RZiEPxolfO5U4vl.mw59u1rSqjDUXdAj/OosfZeLhkNRmhQG0kpO', 'driver');
 
 --
 -- Dumping data for table `drivers_details`
 --
 
 INSERT INTO `drivers_details` (`driver_id`, `id_card`, `driver_license`, `insurance_document`, `license_plate`, `vehicle_type`, `vehicle_color`, `is_verified`) VALUES
-(2, 'uploads/2-driver-license.jpg', 'uploads/2-driver-license.jpg', 'uploads/2-insurance-document.jpg', '29A-135.67', 'car', 'black', 0);
+(2, 'uploads/2-driver-license.jpg', 'uploads/2-driver-license.jpg', 'uploads/2-insurance-document.jpg', '29A-135.67', 'car', 'black', 0),
+(3, 'uploads/3-id-card.jpg', 'uploads/3-driver-license.jpg', 'uploads/3-insurance-document.jpg', '29B-246.89', 'motorbike', 'white', 1),
+(4, 'uploads/4-id-card.jpg', 'uploads/4-driver-license.jpg', 'uploads/4-insurance-document.jpg', '30C-357.90', 'car', 'other', 0),
+(5, 'uploads/5-id-card.jpg', 'uploads/5-driver-license.jpg', 'uploads/5-insurance-document.jpg', '31D-468.12', 'motorbike', 'black', 1),
+(6, 'uploads/6-id-card.jpg', 'uploads/6-driver-license.jpg', 'uploads/6-insurance-document.jpg', '32E-579.34', 'car', 'white', 0);
