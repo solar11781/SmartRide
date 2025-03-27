@@ -66,7 +66,7 @@ function App() {
           <Route path="profile" element={<ProfilePage setIsLoggedIn={setIsLoggedIn} />} />
           <Route path="book-ride" element={<BookRidePage />} />
           <Route path="ride-history" element={<RideHistoryPage />} />
-          <Route path="payments" element={<PaymentsPage />} />
+          <Route path="payment/:ride_id" element={<PaymentsPage />} />
 
           {/* Admin Dashboard nested routes */}
           <Route path="admin">

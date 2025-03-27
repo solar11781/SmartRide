@@ -6,8 +6,12 @@ const ProfilePage = ({ setIsLoggedIn }) => {
 
   // Get user data from localStorage
   const user_id = localStorage.getItem("user_id");
-  const [username, setUsername] = useState(localStorage.getItem("username") || "");
-  const [phone_number, setPhoneNumber] = useState(localStorage.getItem("phone_number") || "");
+  const [username, setUsername] = useState(
+    localStorage.getItem("username") || ""
+  );
+  const [phone_number, setPhoneNumber] = useState(
+    localStorage.getItem("phone_number") || ""
+  );
   const [email, setEmail] = useState(localStorage.getItem("email") || "");
   const type = localStorage.getItem("role");
 
@@ -18,7 +22,12 @@ const ProfilePage = ({ setIsLoggedIn }) => {
   useEffect(() => {
     if (type === "driver") {
       fetch(`http://localhost:5001/api/auth/drivers/${user_id}`)
-        .then((response) => response.json())
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Failed to fetch driver details");
+          }
+          return response.json();
+        })
         .then((data) => setDriverDetails(data))
         .catch((error) =>
           console.error("Error fetching driver details:", error)

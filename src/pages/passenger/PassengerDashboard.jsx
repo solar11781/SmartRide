@@ -55,10 +55,10 @@ const PassengerDashboard = ({ user, onLogout }) => {
               <FaBell /> <span>Notifications</span>
             </Link>
             <Link
-              to="/dashboard/profiles"
+              to="/dashboard/profile"
               className="flex items-center space-x-2 text-blue-600 hover:text-blue-800"
             >
-              <FaBell /> <span>Profiles</span>
+              <FaBell /> <span>Profile</span>
             </Link>
           </nav>
 

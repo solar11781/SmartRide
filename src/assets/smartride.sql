@@ -36,6 +36,39 @@ CREATE TABLE drivers_details (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
+-- Table structure for table `rides`
+--
+
+CREATE TABLE rides (
+  ride_id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  vehicle_type VARCHAR(50),
+  pickup_location VARCHAR(255),
+  dropoff_location VARCHAR(255),
+  status VARCHAR(50) DEFAULT 'Pending',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  distance_km FLOAT,
+  duration_min FLOAT,
+  eta DATETIME,
+  payment_method VARCHAR(50),
+  FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+);
+
+--
+-- Table structure for table `payments`
+--
+
+CREATE TABLE payments (
+  payment_id INT AUTO_INCREMENT PRIMARY KEY,
+  ride_id INT NOT NULL,
+  amount DECIMAL(10, 2) NOT NULL,
+  method VARCHAR(50),
+  status VARCHAR(50),
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (ride_id) REFERENCES rides(ride_id) ON DELETE CASCADE
+);
+
+--
 -- Dumping data for table `users`
 --
 

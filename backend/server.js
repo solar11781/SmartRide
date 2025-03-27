@@ -1,18 +1,39 @@
+// 📦 Load environment variables
+require("dotenv").config();
+
+// 🚀 Create Express app
 const express = require("express");
 const cors = require("cors");
 const path = require("path");
 const app = express();
-require("dotenv").config();
 
-const authRoutes = require("./routes/auth");
-console.log("✅ auth.js route file loaded");
-
+// 🧱 Middleware
 app.use(cors());
 app.use(express.json());
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-app.use("/api/auth", authRoutes);
+app.use("/uploads", express.static(path.join(__dirname, "uploads"))); // Serve static files from the uploads folder
 
+// ✅ Route Imports
+const authRoutes = require("./routes/auth");
+const rideRoutes = require("./routes/ride");
+const paymentRoutes = require("./routes/payment");
+
+// ✅ API Routes
+app.use("/api/auth", authRoutes);
+console.log("✅ /api/auth routes loaded");
+
+app.use("/api/rides", rideRoutes);
+console.log("✅ /api/rides routes loaded");
+
+app.use("/api/payment", paymentRoutes);
+console.log("✅ /api/payment routes loaded");
+
+// 🚨 404 Fallback (must come last)
+app.use((req, res) => {
+  res.status(404).json({ success: false, message: "Route not found" });
+});
+
+// 🟢 Start Server
 const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`✅ Server running at: http://localhost:${PORT}`);
 });

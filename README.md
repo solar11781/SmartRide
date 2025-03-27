@@ -27,13 +27,8 @@ SmartRide is a ride-sharing web application built using:
 1. Open **XAMPP** and **start** the following services:
    - **Apache** (for PHP)
    - **MySQL** (for the database)
-2. Copy the backend PHP files into your **XAMPP `htdocs` directory**:
-   ```sh
-   xampp/htdocs/
-   ```
-   - Move `api_user.php` and `apis.php` into the above directory.
-3. Open **phpMyAdmin** (`http://localhost/phpmyadmin`).
-4. Make a database called `smartride` and import the `smartride.sql` database file.
+2. Open **phpMyAdmin** (`http://localhost/phpmyadmin`).
+3. Make a database called `smartride` and import the `smartride.sql` database file.
 
 ### 3️⃣ Install Dependencies & Start the React App
 
@@ -49,9 +44,18 @@ Then, start the development server:
 npm run dev
 ```
 
-## 4️⃣ Run Node.js Backend
+## 4️⃣ Install Backend Dependencies & Run the Node.js Server
+
+Open another command prompt and install the backend dependencies:
+
 ```sh
-cd smartride/backend
+cd backend
+npm install
+```
+
+And then start the development server:
+
+```sh
 node server.js
 ```
 
@@ -66,8 +70,9 @@ smartride/
 │── public
 │── src/
 │   ├── assets/
-│   ├── components/  # Reusable UI components
-│   ├── pages/       # App pages
+│   ├── components/
+│   ├── layouts/
+│   ├── pages/
 │── .env
 │── package.json
 │── README.md
