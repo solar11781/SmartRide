@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { register, login, getAllUsers, verifyUser } = require('../controllers/authController');
+const { register, login, getAllUsers, getAllDrivers, verifyDriver } = require('../controllers/authController');
 
 router.get('/ping', (req, res) => {
   res.send('Auth route is working!');
@@ -9,6 +9,7 @@ router.get('/ping', (req, res) => {
 router.post('/register', register);
 router.post('/login', login);
 router.get('/users', getAllUsers);
-router.post('/users/verify', verifyUser);
+router.get('/drivers', getAllDrivers);
+router.post('/drivers/verify', verifyDriver);
 
 module.exports = router;

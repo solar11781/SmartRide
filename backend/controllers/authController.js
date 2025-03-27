@@ -1,83 +1,195 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const db = require("../config/db"); // ✅ Fix: Import the DB connection
+const db = require("../config/db");
 const User = require("../models/userModel");
+const multer = require("multer");
+const path = require("path");
+const fs = require("fs");
 
-// ✅ REGISTER FUNCTION
+// Configure multer for file uploads
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, path.join(__dirname, "../uploads"));
+  },
+  filename: (req, file, cb) => {
+    cb(null, `${Date.now()}-${file.originalname}`);
+  },
+});
+const upload = multer({ storage });
+
+// REGISTER FUNCTION
 const register = async (req, res) => {
-  let { username, email, phone_number, password, role, verified } = req.body;
+  upload.fields([
+    { name: "idCard" },
+    { name: "driverLicense" },
+    { name: "insuranceDocument" },
+  ])(req, res, async (err) => {
+    if (err) {
+      return res
+        .status(500)
+        .json({ success: false, message: "File upload failed" });
+    }
 
-  // 0. Sanitize input
-  username = username?.trim();
-  email = email?.trim().toLowerCase();
-  phone_number = phone_number?.replace(/\D/g, ""); // Remove non-digits
-  password = password?.trim();
-  role = role?.trim();
+    let { username, email, phone_number, password, role } = req.body;
 
-  // 1. Validate format
-  if (!username || username.length < 3) {
-    return res
-      .status(400)
-      .json({
+    // 0. Sanitize input
+    username = username?.trim();
+    email = email?.trim().toLowerCase();
+    phone_number = phone_number?.replace(/\D/g, ""); // Remove non-digits
+    password = password?.trim();
+    role = role?.trim().toLowerCase();
+
+    // 1. Validate format
+    if (!username || username.length < 3) {
+      return res.status(400).json({
         success: false,
         message: "Username must be at least 3 characters.",
       });
-  }
+    }
 
-  if (!/^[0-9]{10,15}$/.test(phone_number)) {
-    return res.status(400).json({
-      success: false,
-      message: "Phone number must be 10-15 digits (no letters or symbols).",
-    });
-  }
-
-  const strongPasswordPattern =
-    /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*]).{8,}$/;
-  if (!strongPasswordPattern.test(password)) {
-    return res.status(400).json({
-      success: false,
-      message:
-        "Password must be at least 8 characters, include uppercase, lowercase, number, and special character.",
-    });
-  }
-
-  // 2. Check for duplicates
-  try {
-    const [existing] = await db
-      .promise()
-      .query(
-        "SELECT * FROM users WHERE username = ? OR phone_number = ? OR email = ?",
-        [username, phone_number, email]
-      );
-
-    if (existing.length > 0) {
+    if (!/^[0-9]{10,15}$/.test(phone_number)) {
       return res.status(400).json({
         success: false,
-        message:
-          "An account with this username, phone number or email already exists.",
+        message: "Phone number must be 10-15 digits (no letters or symbols).",
       });
     }
 
-    // 3. Hash password
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const strongPasswordPattern =
+      /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*]).{8,}$/;
+    if (!strongPasswordPattern.test(password)) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Password must be at least 8 characters, include uppercase, lowercase, number, and special character.",
+      });
+    }
 
-    // 4. Insert into DB
-    await db
-      .promise()
-      .query(
-        "INSERT INTO users (username, email, phone_number, password, role, verified) VALUES (?, ?, ?, ?, ?, 0)",
-        [username, email, phone_number, hashedPassword, role, verified]
-      );
+    // 2. Check for duplicates
+    try {
+      const [existing] = await db
+        .promise()
+        .query(
+          "SELECT * FROM users WHERE username = ? OR phone_number = ? OR email = ?",
+          [username, phone_number, email]
+        );
+
+      if (existing.length > 0) {
+        return res.status(400).json({
+          success: false,
+          message:
+            "An account with this username, phone number or email already exists.",
+        });
+      }
+    } catch (error) {
+      console.error("❌ Error checking for duplicates:", error);
+      return res
+        .status(500)
+        .json({ success: false, message: "Error checking for duplicates." });
+    }
+
+    // 3. Hash password
+    let hashedPassword;
+    try {
+      hashedPassword = await bcrypt.hash(password, 10);
+    } catch (error) {
+      console.error("❌ Error hashing password:", error);
+      return res
+        .status(500)
+        .json({ success: false, message: "Error hashing password." });
+    }
+
+    // 4. Insert into users table
+    let userId;
+    try {
+      const [result] = await db
+        .promise()
+        .query(
+          "INSERT INTO users (username, email, phone_number, password, role) VALUES (?, ?, ?, ?, ?)",
+          [username, email, phone_number, hashedPassword, role]
+        );
+
+      userId = result.insertId;
+    } catch (error) {
+      console.error("❌ Error inserting into users table:", error);
+      return res
+        .status(500)
+        .json({ success: false, message: "Error inserting into users table." });
+    }
+
+    // 5. Rename and move uploaded files
+    const idCardPath = req.files.idCard
+      ? `uploads/${userId}-id-card${path.extname(
+          req.files.idCard[0].originalname
+        )}`
+      : null;
+    const driverLicensePath = req.files.driverLicense
+      ? `uploads/${userId}-driver-license${path.extname(
+          req.files.driverLicense[0].originalname
+        )}`
+      : null;
+    const insuranceDocumentPath = req.files.insuranceDocument
+      ? `uploads/${userId}-insurance-document${path.extname(
+          req.files.insuranceDocument[0].originalname
+        )}`
+      : null;
+    const { licensePlate, vehicleType, vehicleColor } = req.body;
+
+    try {
+      if (req.files.idCard) {
+        fs.renameSync(
+          req.files.idCard[0].path,
+          path.join(__dirname, "../", idCardPath)
+        );
+      }
+      if (req.files.driverLicense) {
+        fs.renameSync(
+          req.files.driverLicense[0].path,
+          path.join(__dirname, "../", driverLicensePath)
+        );
+      }
+      if (req.files.insuranceDocument) {
+        fs.renameSync(
+          req.files.insuranceDocument[0].path,
+          path.join(__dirname, "../", insuranceDocumentPath)
+        );
+      }
+    } catch (error) {
+      console.error("❌ Error renaming files:", error);
+      return res
+        .status(500)
+        .json({ success: false, message: "Error renaming files." });
+    }
+
+    // 6. Insert into drivers_details table if role is driver
+    if (role === "driver") {
+      try {
+        await db
+          .promise()
+          .query(
+            "INSERT INTO drivers_details (driver_id, id_card, driver_license, insurance_document, license_plate, vehicle_type, vehicle_color, is_verified) VALUES (?, ?, ?, ?, ?, ?, ?, 0)",
+            [
+              userId,
+              idCardPath,
+              driverLicensePath,
+              insuranceDocumentPath,
+              licensePlate,
+              vehicleType,
+              vehicleColor,
+            ]
+          );
+      } catch (error) {
+        console.error("❌ Error inserting into drivers_details table:", error);
+        return res.status(500).json({
+          success: false,
+          message: "Error inserting into drivers_details table.",
+        });
+      }
+    }
 
     return res
       .status(200)
       .json({ success: true, message: "Account created successfully!" });
-  } catch (error) {
-    console.error("❌ Registration Error:", error);
-    return res
-      .status(500)
-      .json({ success: false, message: "Server error. Please try again." });
-  }
+  });
 };
 
 // ✅ LOGIN FUNCTION
@@ -101,7 +213,6 @@ const login = (req, res) => {
           username: user.username,
           role: user.role,
           phone_number: user.phone_number,
-          verified: user.verified
         },
         "secretkey",
         { expiresIn: "1h" }
@@ -116,28 +227,48 @@ const login = (req, res) => {
           username: user.username,
           role: user.role,
           phone_number: user.phone_number,
-          verified: user.verified
         },
       });
     });
   });
 };
 
-// GET ALL USERS FUNCTION
 const getAllUsers = (req, res) => {
-  User.getAllUsers((err, results) => {
-    if (err) return res.status(500).json({ message: "Server error" });
+  User.fetchAllUsers((err, results) => {
+    if (err) {
+      console.error("❌ Error fetching users:", err);
+      return res.status(500).json({ message: "Server error" });
+    }
+    res.status(200).json(results);
+  });
+};
+
+const getAllDrivers = (req, res) => {
+  User.fetchAllDrivers((err, results) => {
+    if (err) {
+      console.error("❌ Error fetching drivers:", err);
+      return res.status(500).json({ message: "Server error" });
+    }
     res.status(200).json(results);
   });
 };
 
 // VERIFY USER FUNCTION
-const verifyUser = (req, res) => {
+const verifyDriver = (req, res) => {
   const { user_id } = req.body;
-  User.verifyUser(user_id, (err, results) => {
-    if (err) return res.status(500).json({ message: "Server error" });
-    res.status(200).json({ message: "User verified successfully" });
+
+  User.verifyDriver(user_id, (err, results) => {
+    if (err) {
+      console.error("❌ Error verifying driver:", err);
+      return res.status(500).json({ message: "Server error" });
+    }
+
+    if (results.affectedRows === 0) {
+      return res.status(404).json({ message: "Driver not found" });
+    }
+
+    res.status(200).json({ message: "Driver verified successfully" });
   });
 };
 
-module.exports = { register, login, getAllUsers, verifyUser };
+module.exports = { register, login, getAllUsers, getAllDrivers, verifyDriver };
