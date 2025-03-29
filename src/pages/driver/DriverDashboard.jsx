@@ -4,7 +4,8 @@ import {
   FaListAlt,
   FaBell,
   FaSignOutAlt,
-  FaUserCircle,
+  FaUser,
+  FaExclamationCircle,
 } from "react-icons/fa";
 
 const DriverDashboard = ({ user, onLogout }) => {
@@ -15,7 +16,7 @@ const DriverDashboard = ({ user, onLogout }) => {
       {/* Sidebar */}
       <div className="w-72 bg-white border-r p-5 shadow-lg">
         <div className="text-center mb-6">
-          <FaUserCircle size={50} className="mx-auto text-blue-500" />
+          <FaUser size={50} className="mx-auto text-blue-500" />
           <h2 className="text-lg font-semibold mt-2">{username}</h2>
           <p className="text-sm text-gray-500">{role.toUpperCase()}</p>
         </div>
@@ -46,7 +47,14 @@ const DriverDashboard = ({ user, onLogout }) => {
             to="/dashboard/profile"
             className="flex items-center gap-2 text-gray-700 hover:text-blue-600"
           >
-            <FaBell /> Profile
+            <FaUser /> Profile
+          </Link>
+
+          <Link
+            to="/dashboard/report-problem"
+            className="flex items-center gap-2 text-red-500 hover:text-red-700"
+          >
+            <FaExclamationCircle /> Report a Problem
           </Link>
 
           <button

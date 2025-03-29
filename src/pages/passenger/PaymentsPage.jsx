@@ -12,9 +12,12 @@ const PaymentsPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    console.log("Fetching data for ride_id:", ride_id);
     const fetchData = async () => {
       try {
-        const resRide = await fetch(`http://localhost:5001/api/rides/${ride_id}`);
+        const resRide = await fetch(
+          `http://localhost:5001/api/rides/${ride_id}`
+        );
         const rideData = await resRide.json();
 
         if (rideData.success) {
@@ -43,11 +46,14 @@ const PaymentsPage = () => {
     e.preventDefault();
 
     try {
-      const res = await fetch(`http://localhost:5001/api/payment/pay/${ride_id}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ method }),
-      });
+      const res = await fetch(
+        `http://localhost:5001/api/payment/pay/${ride_id}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ method }),
+        }
+      );
 
       const data = await res.json();
       if (data.success) {
@@ -69,7 +75,9 @@ const PaymentsPage = () => {
 
   return (
     <div className="max-w-xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-lg">
-      <h1 className="text-2xl font-bold mb-4 text-center">💰 Payment Details</h1>
+      <h1 className="text-2xl font-bold mb-4 text-center">
+        💰 Payment Details
+      </h1>
 
       {loading ? (
         <p className="text-center text-gray-500">Loading...</p>
@@ -78,11 +86,23 @@ const PaymentsPage = () => {
       ) : (
         <>
           <div className="space-y-3 mb-6">
-            <p><strong>💵 Amount to Pay:</strong> {payment.amount.toLocaleString()} VND</p>
-            <p><strong>🚗 Vehicle:</strong> {ride.vehicle_type}</p>
-            <p><strong>📏 Distance:</strong> {ride.distance_km} km</p>
-            <p><strong>🕒 Ride Created:</strong> {new Date(ride.created_at).toLocaleString()}</p>
-            <p><strong>✅ Current Status:</strong> {payment.status}</p>
+            <p>
+              <strong>💵 Amount to Pay:</strong>{" "}
+              {payment.amount.toLocaleString()} VND
+            </p>
+            <p>
+              <strong>🚗 Vehicle:</strong> {ride.vehicle_type}
+            </p>
+            <p>
+              <strong>📏 Distance:</strong> {ride.distance_km} km
+            </p>
+            <p>
+              <strong>🕒 Ride Created:</strong>{" "}
+              {new Date(ride.created_at).toLocaleString()}
+            </p>
+            <p>
+              <strong>✅ Current Status:</strong> {payment.status}
+            </p>
           </div>
 
           {payment.status !== "Paid" && (
@@ -118,15 +138,24 @@ const PaymentsPage = () => {
 
               {/* ✅ Receipt View */}
               {receipt && (
-  <div className="mt-6 bg-gray-100 p-4 rounded-lg border">
-    <h3 className="text-lg font-semibold mb-2">🧾 Receipt</h3>
-    <p><strong>Receipt ID:</strong> #{receipt.receipt_id || "---"}</p>
-    <p><strong>Amount:</strong> {receipt.amount.toLocaleString()} VND</p>
-    <p><strong>Method:</strong> {receipt.method}</p>
-    <p><strong>Time:</strong> {new Date(receipt.created_at).toLocaleString()}</p>
-  </div>
-)}
-
+                <div className="mt-6 bg-gray-100 p-4 rounded-lg border">
+                  <h3 className="text-lg font-semibold mb-2">🧾 Receipt</h3>
+                  <p>
+                    <strong>Receipt ID:</strong> #{receipt.receipt_id || "---"}
+                  </p>
+                  <p>
+                    <strong>Amount:</strong> {receipt.amount.toLocaleString()}{" "}
+                    VND
+                  </p>
+                  <p>
+                    <strong>Method:</strong> {receipt.method}
+                  </p>
+                  <p>
+                    <strong>Time:</strong>{" "}
+                    {new Date(receipt.created_at).toLocaleString()}
+                  </p>
+                </div>
+              )}
             </>
           )}
         </>

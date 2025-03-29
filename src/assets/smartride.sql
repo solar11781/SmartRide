@@ -69,6 +69,21 @@ CREATE TABLE payments (
 );
 
 --
+-- Table structure for table `problems`
+--
+
+CREATE TABLE problems (
+  problem_id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  ride_id INT DEFAULT NULL,
+  description TEXT NOT NULL,
+  status ENUM('Pending', 'Resolved') DEFAULT 'Pending',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+  FOREIGN KEY (ride_id) REFERENCES rides(ride_id) ON DELETE SET NULL
+);
+
+--
 -- Dumping data for table `users`
 --
 

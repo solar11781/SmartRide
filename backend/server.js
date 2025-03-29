@@ -16,6 +16,7 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads"))); // Serve s
 const authRoutes = require("./routes/auth");
 const rideRoutes = require("./routes/ride");
 const paymentRoutes = require("./routes/payment");
+const problemRoutes = require("./routes/problem");
 
 // ✅ API Routes
 app.use("/api/auth", authRoutes);
@@ -26,6 +27,9 @@ console.log("✅ /api/rides routes loaded");
 
 app.use("/api/payment", paymentRoutes);
 console.log("✅ /api/payment routes loaded");
+
+app.use("/api/problems", problemRoutes);
+console.log("✅ /api/problems routes loaded");
 
 // 🚨 404 Fallback (must come last)
 app.use((req, res) => {

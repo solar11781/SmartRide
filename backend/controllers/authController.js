@@ -1,6 +1,5 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const db = require("../config/db");
 const User = require("../models/userModel");
 const multer = require("multer");
 const fs = require("fs");
@@ -32,14 +31,14 @@ const register = async (req, res) => {
 
     let { username, email, phone_number, password, role } = req.body;
 
-    // 0. Sanitize input
+    // Sanitize input
     username = username?.trim();
     email = email?.trim().toLowerCase();
     phone_number = phone_number?.replace(/\D/g, ""); // Remove non-digits
     password = password?.trim();
     role = role?.trim().toLowerCase();
 
-    // 1. Validate format
+    // Validate input
     if (!username || username.length < 3) {
       return res.status(400).json({
         success: false,
@@ -50,7 +49,7 @@ const register = async (req, res) => {
     if (!/^[0-9]{10,15}$/.test(phone_number)) {
       return res.status(400).json({
         success: false,
-        message: "Phone number must be 10-15 digits (no letters or symbols).",
+        message: "Phone number must be 10-15 digits.",
       });
     }
 
@@ -64,300 +63,214 @@ const register = async (req, res) => {
       });
     }
 
-    // 2. Check for duplicates
     try {
-      const [existing] = await db
-        .promise()
-        .query(
-          "SELECT * FROM users WHERE username = ? OR phone_number = ? OR email = ?",
-          [username, phone_number, email]
-        );
-
-      if (existing.length > 0) {
+      // Check for duplicates
+      const existingUser = await User.findDuplicate(username, email, phone_number);
+      if (existingUser) {
         return res.status(400).json({
           success: false,
-          message:
-            "An account with this username, phone number or email already exists.",
+          message: "An account with this username, email, or phone number already exists.",
         });
       }
-    } catch (error) {
-      console.error("❌ Error checking for duplicates:", error);
-      return res
-        .status(500)
-        .json({ success: false, message: "Error checking for duplicates." });
-    }
 
-    // 3. Hash password
-    let hashedPassword;
-    try {
-      hashedPassword = await bcrypt.hash(password, 10);
-    } catch (error) {
-      console.error("❌ Error hashing password:", error);
-      return res
-        .status(500)
-        .json({ success: false, message: "Error hashing password." });
-    }
+      // Hash password
+      const hashedPassword = await bcrypt.hash(password, 10);
 
-    // 4. Insert into users table
-    let userId;
-    try {
-      const [result] = await db
-        .promise()
-        .query(
-          "INSERT INTO users (username, email, phone_number, password, role) VALUES (?, ?, ?, ?, ?)",
-          [username, email, phone_number, hashedPassword, role]
-        );
+      // Create user
+      const userId = await User.create({
+        username,
+        email,
+        phone_number,
+        password: hashedPassword,
+        role,
+      });
 
-      userId = result.insertId;
-    } catch (error) {
-      console.error("❌ Error inserting into users table:", error);
-      return res
-        .status(500)
-        .json({ success: false, message: "Error inserting into users table." });
-    }
+      // Handle driver-specific details
+      if (role === "driver") {
+        const idCardPath = req.files.idCard
+          ? `uploads/${userId}-id-card${path.extname(req.files.idCard[0].originalname)}`
+          : null;
+        const driverLicensePath = req.files.driverLicense
+          ? `uploads/${userId}-driver-license${path.extname(req.files.driverLicense[0].originalname)}`
+          : null;
+        const insuranceDocumentPath = req.files.insuranceDocument
+          ? `uploads/${userId}-insurance-document${path.extname(req.files.insuranceDocument[0].originalname)}`
+          : null;
 
-    // 5. Rename and move uploaded files
-    const idCardPath = req.files.idCard
-      ? `uploads/${userId}-id-card${path.extname(
-          req.files.idCard[0].originalname
-        )}`
-      : null;
-    const driverLicensePath = req.files.driverLicense
-      ? `uploads/${userId}-driver-license${path.extname(
-          req.files.driverLicense[0].originalname
-        )}`
-      : null;
-    const insuranceDocumentPath = req.files.insuranceDocument
-      ? `uploads/${userId}-insurance-document${path.extname(
-          req.files.insuranceDocument[0].originalname
-        )}`
-      : null;
-    const { licensePlate, vehicleType, vehicleColor } = req.body;
+        const { licensePlate, vehicleType, vehicleColor } = req.body;
 
-    try {
-      if (req.files.idCard) {
-        fs.renameSync(
-          req.files.idCard[0].path,
-          path.join(__dirname, "../", idCardPath)
-        );
-      }
-      if (req.files.driverLicense) {
-        fs.renameSync(
-          req.files.driverLicense[0].path,
-          path.join(__dirname, "../", driverLicensePath)
-        );
-      }
-      if (req.files.insuranceDocument) {
-        fs.renameSync(
-          req.files.insuranceDocument[0].path,
-          path.join(__dirname, "../", insuranceDocumentPath)
-        );
-      }
-    } catch (error) {
-      console.error("❌ Error renaming files:", error);
-      return res
-        .status(500)
-        .json({ success: false, message: "Error renaming files." });
-    }
+        // Rename and move uploaded files
+        if (req.files.idCard) {
+          fs.renameSync(req.files.idCard[0].path, path.join(__dirname, "../", idCardPath));
+        }
+        if (req.files.driverLicense) {
+          fs.renameSync(req.files.driverLicense[0].path, path.join(__dirname, "../", driverLicensePath));
+        }
+        if (req.files.insuranceDocument) {
+          fs.renameSync(req.files.insuranceDocument[0].path, path.join(__dirname, "../", insuranceDocumentPath));
+        }
 
-    // 6. Insert into drivers_details table if role is driver
-    if (role === "driver") {
-      try {
-        await db
-          .promise()
-          .query(
-            "INSERT INTO drivers_details (driver_id, id_card, driver_license, insurance_document, license_plate, vehicle_type, vehicle_color, is_verified) VALUES (?, ?, ?, ?, ?, ?, ?, 0)",
-            [
-              userId,
-              idCardPath,
-              driverLicensePath,
-              insuranceDocumentPath,
-              licensePlate,
-              vehicleType,
-              vehicleColor,
-            ]
-          );
-      } catch (error) {
-        console.error("❌ Error inserting into drivers_details table:", error);
-        return res.status(500).json({
-          success: false,
-          message: "Error inserting into drivers_details table.",
+        // Save driver details
+        await User.createDriverDetails({
+          driver_id: userId,
+          id_card: idCardPath,
+          driver_license: driverLicensePath,
+          insurance_document: insuranceDocumentPath,
+          license_plate: licensePlate,
+          vehicle_type: vehicleType,
+          vehicle_color: vehicleColor,
         });
       }
-    }
 
-    return res
-      .status(200)
-      .json({ success: true, message: "Account created successfully!" });
+      res.status(200).json({ success: true, message: "Account created successfully!" });
+    } catch (error) {
+      console.error("❌ Error during registration:", error);
+      res.status(500).json({ success: false, message: "Server error during registration." });
+    }
   });
 };
 
-// ✅ LOGIN FUNCTION
-const login = (req, res) => {
+// LOGIN FUNCTION
+const login = async (req, res) => {
   const { username, password } = req.body;
 
-  User.findUserByUsername(username, (err, results) => {
-    if (err || results.length === 0)
+  try {
+    const user = await User.findByUsername(username);
+    if (!user) {
       return res.status(401).json({ message: "User not found" });
+    }
 
-    const user = results[0];
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(401).json({ message: "Invalid credentials" });
+    }
 
-    bcrypt.compare(password, user.password, (err, isMatch) => {
-      if (err || !isMatch)
-        return res.status(401).json({ message: "Invalid credentials" });
+    const token = jwt.sign(
+      {
+        id: user.user_id,
+        email: user.email,
+        username: user.username,
+        role: user.role,
+        phone_number: user.phone_number,
+      },
+      "secretkey",
+      { expiresIn: "1h" }
+    );
 
-      const token = jwt.sign(
-        {
-          id: user.user_id,
-          email: user.email,
-          username: user.username,
-          role: user.role,
-          phone_number: user.phone_number,
-        },
-        "secretkey",
-        { expiresIn: "1h" }
-      );
-
-      res.status(200).json({
-        message: "Login successful",
-        token,
-        user: {
-          id: user.user_id,
-          email: user.email,
-          username: user.username,
-          role: user.role,
-          phone_number: user.phone_number,
-        },
-      });
+    res.status(200).json({
+      message: "Login successful",
+      token,
+      user: {
+        id: user.user_id,
+        email: user.email,
+        username: user.username,
+        role: user.role,
+        phone_number: user.phone_number,
+      },
     });
-  });
+  } catch (error) {
+    console.error("❌ Error during login:", error);
+    res.status(500).json({ message: "Server error during login." });
+  }
 };
 
-const getAllUsers = (req, res) => {
-  User.fetchAllUsers((err, results) => {
-    if (err) {
-      console.error("❌ Error fetching users:", err);
-      return res.status(500).json({ message: "Server error" });
-    }
-    res.status(200).json(results);
-  });
+// GET ALL USERS
+const getAllUsers = async (req, res) => {
+  try {
+    const users = await User.findAll();
+    res.status(200).json(users);
+  } catch (error) {
+    console.error("❌ Error fetching users:", error);
+    res.status(500).json({ message: "Server error" });
+  }
 };
 
-const getAllDrivers = (req, res) => {
-  User.fetchAllDrivers((err, results) => {
-    if (err) {
-      console.error("❌ Error fetching drivers:", err);
-      return res.status(500).json({ message: "Server error" });
-    }
-    res.status(200).json(results);
-  });
+// GET ALL DRIVERS
+const getAllDrivers = async (req, res) => {
+  try {
+    const drivers = await User.findAllDrivers();
+    res.status(200).json(drivers);
+  } catch (error) {
+    console.error("❌ Error fetching drivers:", error);
+    res.status(500).json({ message: "Server error" });
+  }
 };
 
-// VERIFY USER FUNCTION
-const verifyDriver = (req, res) => {
+// VERIFY DRIVER
+const verifyDriver = async (req, res) => {
   const { user_id } = req.body;
 
-  User.verifyDriver(user_id, (err, results) => {
-    if (err) {
-      console.error("❌ Error verifying driver:", err);
-      return res.status(500).json({ message: "Server error" });
-    }
-
-    if (results.affectedRows === 0) {
+  try {
+    const result = await User.verifyDriver(user_id);
+    if (result.affectedRows === 0) {
       return res.status(404).json({ message: "Driver not found" });
     }
 
     res.status(200).json({ message: "Driver verified successfully" });
-  });
+  } catch (error) {
+    console.error("❌ Error verifying driver:", error);
+    res.status(500).json({ message: "Server error" });
+  }
 };
 
-const getDriverDetails = (req, res) => {
+// GET DRIVER DETAILS
+const getDriverDetails = async (req, res) => {
   const { user_id } = req.params;
 
-  User.getDriverDetailsById(user_id, (err, results) => {
-    if (err) {
-      console.error("❌ Error fetching driver details:", err);
-      return res.status(500).json({ message: "Server error" });
-    }
-
-    if (results.length === 0) {
+  try {
+    const driverDetails = await User.getDriverDetails(user_id);
+    if (!driverDetails) {
       return res.status(404).json({ message: "Driver details not found" });
     }
 
-    res.status(200).json(results[0]);
-  });
+    res.status(200).json(driverDetails);
+  } catch (error) {
+    console.error("❌ Error fetching driver details:", error);
+    res.status(500).json({ message: "Server error" });
+  }
 };
 
-const updateUser = (req, res) => {
+// UPDATE USER
+const updateUser = async (req, res) => {
   const { user_id, username, email, phone_number } = req.body;
 
-  User.updateUserDetails(
-    user_id,
-    username,
-    email,
-    phone_number,
-    (err, results) => {
-      if (err) {
-        console.error("❌ Error updating user details:", err);
-        return res.status(500).json({ message: "Server error" });
-      }
-
-      res.status(200).json({ message: "User details updated successfully" });
-    }
-  );
+  try {
+    await User.updateDetails(user_id, { username, email, phone_number });
+    res.status(200).json({ message: "User details updated successfully" });
+  } catch (error) {
+    console.error("❌ Error updating user details:", error);
+    res.status(500).json({ message: "Server error" });
+  }
 };
 
-const deleteUser = (req, res) => {
+// DELETE USER
+const deleteUser = async (req, res) => {
   const { user_id } = req.params;
 
-  // Fetch the user's document paths
-  User.getDriverDetailsById(user_id, (err, driverDetails) => {
-    if (err) {
-      console.error("❌ Error fetching driver details:", err);
-      return res.status(500).json({ message: "Server error" });
-    }
+  try {
+    const driverDetails = await User.getDriverDetails(user_id);
 
-    // TODO: for some fucking reason, this part doesnt work and doesnt even log anything out
-    console.log("Driver Details:", driverDetails); // Log the driver details
-
-    // Delete the document files if they exist
+    // Delete associated files
     if (driverDetails) {
       const { id_card, driver_license, insurance_document } = driverDetails;
 
       [id_card, driver_license, insurance_document].forEach((filePath) => {
         if (filePath) {
           const fullPath = path.join(__dirname, "../", filePath);
-
-          console.log("Full Path:", fullPath);
-
-          // Check if the file exists before attempting to delete
           if (fs.existsSync(fullPath)) {
-            fs.unlink(fullPath, (err) => {
-              if (err) {
-                console.log(`❌ Error deleting file ${filePath}:`, err);
-              } else {
-                console.log(`✅ Successfully deleted file: ${filePath}`);
-              }
-            });
-          } else {
-            console.log(`⚠️ File not found: ${filePath}`);
+            fs.unlinkSync(fullPath);
           }
         }
       });
     }
 
-    // Delete the user account
-    User.deleteUserAccount(user_id, (err, results) => {
-      if (err) {
-        console.error("❌ Error deleting user account:", err);
-        return res.status(500).json({ message: "Server error" });
-      }
-
-      res
-        .status(200)
-        .json({ message: "User account and documents deleted successfully" });
-    });
-  });
+    // Delete user
+    await User.delete(user_id);
+    res.status(200).json({ message: "User account and documents deleted successfully" });
+  } catch (error) {
+    console.error("❌ Error deleting user:", error);
+    res.status(500).json({ message: "Server error" });
+  }
 };
 
 module.exports = {

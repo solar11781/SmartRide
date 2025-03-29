@@ -18,6 +18,7 @@ import PaymentsPage from "./pages/passenger/PaymentsPage";
 import ManageUsers from "./pages/admin/ManageUsers";
 import ReportsAnalytics from "./pages/admin/ReportsAnalytics";
 import DriverApprovals from "./pages/admin/DriverApprovals";
+import ReportProblemPage from "./pages/ReportProblemPage";
 
 
 function App() {
@@ -67,6 +68,7 @@ function App() {
           <Route path="book-ride" element={<BookRidePage />} />
           <Route path="ride-history" element={<RideHistoryPage />} />
           <Route path="payment/:ride_id" element={<PaymentsPage />} />
+          <Route path="report-problem" element={<ReportProblemPage />} />
 
           {/* Admin Dashboard nested routes */}
           <Route path="admin">

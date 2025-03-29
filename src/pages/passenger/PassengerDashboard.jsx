@@ -4,11 +4,13 @@ import {
   FaHistory,
   FaMoneyBillWave,
   FaBell,
+  FaUser,
   FaSignOutAlt,
+  FaExclamationCircle,
 } from "react-icons/fa";
 
 const PassengerDashboard = ({ user, onLogout }) => {
-  const { username, role} = user;
+  const { username, role } = user;
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
@@ -54,11 +56,19 @@ const PassengerDashboard = ({ user, onLogout }) => {
             >
               <FaBell /> <span>Notifications</span>
             </Link>
+
             <Link
               to="/dashboard/profile"
               className="flex items-center space-x-2 text-blue-600 hover:text-blue-800"
             >
-              <FaBell /> <span>Profile</span>
+              <FaUser /> <span>Profile</span>
+            </Link>
+
+            <Link
+              to="/dashboard/report-problem"
+              className="flex items-center space-x-2 text-red-500 hover:text-red-700"
+            >
+              <FaExclamationCircle /> <span>Report a Problem</span>
             </Link>
           </nav>
 
