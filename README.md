@@ -3,7 +3,7 @@
 SmartRide is a ride-sharing web application built using:
 
 - **React, Tailwind CSS** (Frontend)
-- **PHP** (Backend)
+- **Node.js** (Backend)
 - **MySQL** (Database)
 - **Mapbox API** (Maps & Navigation)
 
