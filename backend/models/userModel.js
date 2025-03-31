@@ -22,6 +22,23 @@ class User {
     return result.insertId; // Return the new user's ID
   }
 
+  // Find duplicate user by username, phone number, or email
+  static async findDuplicate(username, email, phone_number) {
+    try {
+      const sql = `
+      SELECT * FROM users 
+      WHERE username = ? OR phone_number = ? OR email = ?
+    `;
+      const [rows] = await db
+        .promise()
+        .query(sql, [username, phone_number, email]);
+      return rows.length ? new User(rows[0]) : null; // Return the first matching user or null
+    } catch (error) {
+      console.error("❌ Error checking for duplicate user:", error);
+      throw new Error("Database query failed");
+    }
+  }
+
   // Find a user by username
   static async findByUsername(username) {
     const sql = `SELECT * FROM users WHERE username = ?`;

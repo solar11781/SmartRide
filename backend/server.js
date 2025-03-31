@@ -17,6 +17,7 @@ const authRoutes = require("./routes/auth");
 const rideRoutes = require("./routes/ride");
 const paymentRoutes = require("./routes/payment");
 const problemRoutes = require("./routes/problem");
+const analyticsRoutes = require("./routes/analytics");
 
 // ✅ API Routes
 app.use("/api/auth", authRoutes);
@@ -30,6 +31,9 @@ console.log("✅ /api/payment routes loaded");
 
 app.use("/api/problems", problemRoutes);
 console.log("✅ /api/problems routes loaded");
+
+app.use("/api/analytics", analyticsRoutes);
+console.log("✅ /api/analytics routes loaded");
 
 // 🚨 404 Fallback (must come last)
 app.use((req, res) => {

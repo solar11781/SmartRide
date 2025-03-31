@@ -1,7 +1,14 @@
 const db = require("../config/db");
 
 class Problem {
-  constructor({ problem_id, user_id, ride_id, description, status, created_at }) {
+  constructor({
+    problem_id,
+    user_id,
+    ride_id,
+    description,
+    status,
+    created_at,
+  }) {
     this.problem_id = problem_id;
     this.user_id = user_id;
     this.ride_id = ride_id;
@@ -16,32 +23,36 @@ class Problem {
       INSERT INTO problems (user_id, ride_id, description, status)
       VALUES (?, ?, ?, ?)
     `;
-    const [result] = await db.promise().query(query, [
-      this.user_id,
-      this.ride_id,
-      this.description,
-      this.status,
-    ]);
+    const [result] = await db
+      .promise()
+      .query(query, [
+        this.user_id,
+        this.ride_id,
+        this.description,
+        this.status,
+      ]);
     this.problem_id = result.insertId;
     return this;
-  }
-
-  // Retrieve all problems for a specific user
-  static async findByUserId(user_id) {
-    const query = `
-      SELECT * FROM problems WHERE user_id = ? ORDER BY created_at DESC
-    `;
-    const [rows] = await db.promise().query(query, [user_id]);
-    return rows.map((row) => new Problem(row));
   }
 
   // Retrieve all problems (admin use case)
   static async findAll() {
     const query = `
-      SELECT * FROM problems ORDER BY created_at DESC
+      SELECT 
+        problems.problem_id,
+        problems.description,
+        problems.status,
+        problems.created_at,
+        COALESCE(users.username, 'Unknown User') AS username,
+        COALESCE(rides.pickup_location, 'Unknown Location') AS pickup_location,
+        COALESCE(rides.dropoff_location, 'Unknown Location') AS dropoff_location
+      FROM problems
+      LEFT JOIN users ON problems.user_id = users.user_id
+      LEFT JOIN rides ON problems.ride_id = rides.ride_id
+      ORDER BY problems.created_at DESC
     `;
     const [rows] = await db.promise().query(query);
-    return rows.map((row) => new Problem(row));
+    return rows;
   }
 
   // Update the status of a problem

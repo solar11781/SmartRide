@@ -19,6 +19,7 @@ import ManageUsers from "./pages/admin/ManageUsers";
 import ReportsAnalytics from "./pages/admin/ReportsAnalytics";
 import DriverApprovals from "./pages/admin/DriverApprovals";
 import ReportProblemPage from "./pages/ReportProblemPage";
+import ProblemsPage from "./pages/admin/ProblemsPage";
 
 
 function App() {
@@ -75,6 +76,7 @@ function App() {
             <Route path="users" element={<ManageUsers />} />
             <Route path="reports" element={<ReportsAnalytics />} />
             <Route path="approvals" element={<DriverApprovals />} />
+            <Route path="problems" element={<ProblemsPage />} />
           </Route>
         </Route>
 
