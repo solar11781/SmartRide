@@ -16,13 +16,9 @@ class User {
       INSERT INTO users (username, email, phone_number, password, role)
       VALUES (?, ?, ?, ?, ?)
     `;
-    const [result] = await db.promise().query(sql, [
-      username,
-      email,
-      phone_number,
-      password,
-      role,
-    ]);
+    const [result] = await db
+      .promise()
+      .query(sql, [username, email, phone_number, password, role]);
     return result.insertId; // Return the new user's ID
   }
 
@@ -38,6 +34,53 @@ class User {
     const sql = `SELECT * FROM users WHERE user_id = ?`;
     const [rows] = await db.promise().query(sql, [user_id]);
     return rows.length ? new User(rows[0]) : null;
+  }
+
+  // Fetch all users with driver verification status
+  static async fetchAllUsers() {
+    try {
+      const sql = `
+      SELECT 
+        users.user_id, 
+        users.username, 
+        users.email, 
+        users.role, 
+        users.phone_number, 
+        COALESCE(drivers_details.is_verified, NULL) AS is_verified
+      FROM users
+      LEFT JOIN drivers_details ON users.user_id = drivers_details.driver_id
+    `;
+      const [rows] = await db.promise().query(sql);
+      return rows; // Return raw rows instead of mapping to User instances
+    } catch (error) {
+      console.error("❌ Error fetching all users:", error);
+      throw new Error("Database query failed");
+    }
+  }
+
+  // Fetch all drivers with their details
+  static async fetchAllDrivers() {
+    try {
+      const sql = `
+      SELECT 
+        users.user_id, 
+        users.username, 
+        users.email, 
+        users.phone_number, 
+        drivers_details.id_card, 
+        drivers_details.driver_license, 
+        drivers_details.insurance_document, 
+        drivers_details.vehicle_color, 
+        drivers_details.is_verified 
+      FROM users
+      INNER JOIN drivers_details ON users.user_id = drivers_details.driver_id
+    `;
+      const [rows] = await db.promise().query(sql);
+      return rows; // Return raw rows instead of mapping to User instances
+    } catch (error) {
+      console.error("❌ Error fetching all drivers:", error);
+      throw new Error("Database query failed");
+    }
   }
 
   // Update user details
@@ -74,6 +117,19 @@ class User {
     return rows.length ? rows[0] : null;
   }
 
+  // Verify driver
+  static async verifyDriver(driver_id) {
+    try {
+      const sql =
+        "UPDATE drivers_details SET is_verified = 1 WHERE driver_id = ?";
+      const [result] = await db.promise().query(sql, [driver_id]);
+      return result; // Return the result of the query
+    } catch (error) {
+      console.error("❌ Error verifying driver:", error);
+      throw new Error("Database query failed");
+    }
+  }
+
   // Create driver details
   static async createDriverDetails({
     driver_id,
@@ -89,15 +145,17 @@ class User {
         driver_id, id_card, driver_license, insurance_document, license_plate, vehicle_type, vehicle_color, is_verified
       ) VALUES (?, ?, ?, ?, ?, ?, ?, 0)
     `;
-    await db.promise().query(sql, [
-      driver_id,
-      id_card,
-      driver_license,
-      insurance_document,
-      license_plate,
-      vehicle_type,
-      vehicle_color,
-    ]);
+    await db
+      .promise()
+      .query(sql, [
+        driver_id,
+        id_card,
+        driver_license,
+        insurance_document,
+        license_plate,
+        vehicle_type,
+        vehicle_color,
+      ]);
   }
 }
 

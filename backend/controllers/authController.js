@@ -65,11 +65,16 @@ const register = async (req, res) => {
 
     try {
       // Check for duplicates
-      const existingUser = await User.findDuplicate(username, email, phone_number);
+      const existingUser = await User.findDuplicate(
+        username,
+        email,
+        phone_number
+      );
       if (existingUser) {
         return res.status(400).json({
           success: false,
-          message: "An account with this username, email, or phone number already exists.",
+          message:
+            "An account with this username, email, or phone number already exists.",
         });
       }
 
@@ -88,26 +93,41 @@ const register = async (req, res) => {
       // Handle driver-specific details
       if (role === "driver") {
         const idCardPath = req.files.idCard
-          ? `uploads/${userId}-id-card${path.extname(req.files.idCard[0].originalname)}`
+          ? `uploads/${userId}-id-card${path.extname(
+              req.files.idCard[0].originalname
+            )}`
           : null;
         const driverLicensePath = req.files.driverLicense
-          ? `uploads/${userId}-driver-license${path.extname(req.files.driverLicense[0].originalname)}`
+          ? `uploads/${userId}-driver-license${path.extname(
+              req.files.driverLicense[0].originalname
+            )}`
           : null;
         const insuranceDocumentPath = req.files.insuranceDocument
-          ? `uploads/${userId}-insurance-document${path.extname(req.files.insuranceDocument[0].originalname)}`
+          ? `uploads/${userId}-insurance-document${path.extname(
+              req.files.insuranceDocument[0].originalname
+            )}`
           : null;
 
         const { licensePlate, vehicleType, vehicleColor } = req.body;
 
         // Rename and move uploaded files
         if (req.files.idCard) {
-          fs.renameSync(req.files.idCard[0].path, path.join(__dirname, "../", idCardPath));
+          fs.renameSync(
+            req.files.idCard[0].path,
+            path.join(__dirname, "../", idCardPath)
+          );
         }
         if (req.files.driverLicense) {
-          fs.renameSync(req.files.driverLicense[0].path, path.join(__dirname, "../", driverLicensePath));
+          fs.renameSync(
+            req.files.driverLicense[0].path,
+            path.join(__dirname, "../", driverLicensePath)
+          );
         }
         if (req.files.insuranceDocument) {
-          fs.renameSync(req.files.insuranceDocument[0].path, path.join(__dirname, "../", insuranceDocumentPath));
+          fs.renameSync(
+            req.files.insuranceDocument[0].path,
+            path.join(__dirname, "../", insuranceDocumentPath)
+          );
         }
 
         // Save driver details
@@ -122,10 +142,14 @@ const register = async (req, res) => {
         });
       }
 
-      res.status(200).json({ success: true, message: "Account created successfully!" });
+      res
+        .status(200)
+        .json({ success: true, message: "Account created successfully!" });
     } catch (error) {
       console.error("❌ Error during registration:", error);
-      res.status(500).json({ success: false, message: "Server error during registration." });
+      res
+        .status(500)
+        .json({ success: false, message: "Server error during registration." });
     }
   });
 };
@@ -177,22 +201,22 @@ const login = async (req, res) => {
 // GET ALL USERS
 const getAllUsers = async (req, res) => {
   try {
-    const users = await User.findAll();
+    const users = await User.fetchAllUsers();
     res.status(200).json(users);
   } catch (error) {
     console.error("❌ Error fetching users:", error);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: "Failed to fetch users" });
   }
 };
 
 // GET ALL DRIVERS
 const getAllDrivers = async (req, res) => {
   try {
-    const drivers = await User.findAllDrivers();
+    const drivers = await User.fetchAllDrivers();
     res.status(200).json(drivers);
   } catch (error) {
     console.error("❌ Error fetching drivers:", error);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: "Failed to fetch drivers" });
   }
 };
 
@@ -266,7 +290,9 @@ const deleteUser = async (req, res) => {
 
     // Delete user
     await User.delete(user_id);
-    res.status(200).json({ message: "User account and documents deleted successfully" });
+    res
+      .status(200)
+      .json({ message: "User account and documents deleted successfully" });
   } catch (error) {
     console.error("❌ Error deleting user:", error);
     res.status(500).json({ message: "Server error" });
