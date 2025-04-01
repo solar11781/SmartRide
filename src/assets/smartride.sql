@@ -91,6 +91,18 @@ CREATE TABLE problems (
 );
 
 --
+-- Table structure for table `notifications`
+--
+
+CREATE TABLE notifications (
+  notification_id INT AUTO_INCREMENT PRIMARY KEY,
+  ride_id INT NOT NULL,
+  message TEXT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (ride_id) REFERENCES rides(ride_id) ON DELETE CASCADE
+);
+
+--
 -- Dumping data for table `users`
 --
 

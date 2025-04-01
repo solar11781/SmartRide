@@ -64,6 +64,8 @@ node server.js
 Admin account:
    - **Username**: admin
    - **Password**: 111
+   
+(All dummy accounts imported into the database have the same password)
 
 ---
 

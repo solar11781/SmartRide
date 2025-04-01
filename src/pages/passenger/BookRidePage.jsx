@@ -139,7 +139,7 @@ const BookRidePage = () => {
 
           <button
             type="submit"
-            className="w-full py-2 bg-blue-500 hover:bg-blue-700 text-white rounded-lg"
+            className="w-full py-2 cursor-pointer bg-blue-500 hover:bg-blue-700 text-white rounded-lg"
           >
             Book Ride
           </button>

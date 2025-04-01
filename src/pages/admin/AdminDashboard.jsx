@@ -1,5 +1,12 @@
 import { Link, Outlet } from "react-router-dom";
-import { Bell, LogOut, BarChart3, Users2, ShieldCheck } from "lucide-react";
+import {
+  Bell,
+  LogOut,
+  BarChart3,
+  Users2,
+  ShieldCheck,
+  AlertTriangle,
+} from "lucide-react";
 
 const AdminDashboard = ({ user, onLogout }) => {
   const { username } = user;
@@ -32,10 +39,16 @@ const AdminDashboard = ({ user, onLogout }) => {
               <ShieldCheck size={18} /> <span>Driver Approvals</span>
             </Link>
             <Link
+              to="/dashboard/admin/notifications"
+              className="flex items-center space-x-2 hover:text-blue-400"
+            >
+              <Bell size={18} /> <span>Notifications</span>
+            </Link>
+            <Link
               to="/dashboard/admin/problems"
               className="flex items-center space-x-2 hover:text-blue-400"
             >
-              <Bell size={18} /> <span>Problems</span>
+              <AlertTriangle size={18} /> <span>Problems</span>
             </Link>
           </nav>
         </div>

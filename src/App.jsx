@@ -10,14 +10,14 @@ import RegisterPage from "./pages/RegisterPage";
 import DashboardLayout from "./layouts/DashboardLayout";
 import ProfilePage from "./pages/ProfilePage";
 import MyRides from "./pages/driver/MyRides";
-import Notifications from "./pages/Notifications";
+import Notifications from "./pages/admin/Notifications";
 import BookRidePage from "./pages/passenger/BookRidePage";
 import RideHistoryPage from "./pages/passenger/RideHistoryPage";
 import PaymentsPage from "./pages/passenger/PaymentsPage";
 import ManageUsers from "./pages/admin/ManageUsers";
 import ReportsAnalytics from "./pages/admin/ReportsAnalytics";
 import DriverApprovals from "./pages/admin/DriverApprovals";
-import ReportProblemPage from "./pages/ReportProblemPage";
+import ReportProblemPage from "./pages/passenger/ReportProblemPage";
 import ProblemsPage from "./pages/admin/ProblemsPage";
 
 
@@ -62,7 +62,6 @@ function App() {
           element={<DashboardLayout setIsLoggedIn={setIsLoggedIn} />}
         >
           <Route path="my-rides" element={<MyRides />} />
-          <Route path="notifications" element={<Notifications />} />
           <Route path="profile" element={<ProfilePage setIsLoggedIn={setIsLoggedIn} />} />
           <Route path="book-ride" element={<BookRidePage />} />
           <Route path="ride-history" element={<RideHistoryPage />} />
@@ -75,6 +74,7 @@ function App() {
             <Route path="reports" element={<ReportsAnalytics />} />
             <Route path="approvals" element={<DriverApprovals />} />
             <Route path="problems" element={<ProblemsPage />} />
+            <Route path="notifications" element={<Notifications />} />
           </Route>
         </Route>
 

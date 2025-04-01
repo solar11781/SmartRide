@@ -1,8 +1,6 @@
 import { Link, Outlet } from "react-router-dom";
 import {
-  FaCarSide,
   FaListAlt,
-  FaBell,
   FaSignOutAlt,
   FaUserCircle,
   FaMapMarkerAlt,
@@ -61,20 +59,6 @@ const DriverDashboard = ({ user, onLogout }) => {
             className="flex items-center gap-2 text-gray-700 hover:text-blue-600"
           >
             <FaListAlt /> My Assigned Rides
-          </Link>
-
-          <Link
-            to="/dashboard/register-vehicle"
-            className="flex items-center gap-2 text-gray-700 hover:text-blue-600"
-          >
-            <FaCarSide /> Register Vehicle
-          </Link>
-
-          <Link
-            to="/dashboard/notifications"
-            className="flex items-center gap-2 text-gray-700 hover:text-blue-600"
-          >
-            <FaBell /> Notifications
           </Link>
 
           <Link

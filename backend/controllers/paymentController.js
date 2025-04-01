@@ -3,22 +3,25 @@ const db = require("../config/db");
 const getPaymentByRideId = async (req, res) => {
   const { ride_id } = req.params;
   try {
-    const [rideResults] = await db.promise().query(
-      "SELECT * FROM rides WHERE ride_id = ?",
-      [ride_id]
-    );
+    const [rideResults] = await db
+      .promise()
+      .query("SELECT * FROM rides WHERE ride_id = ?", [ride_id]);
 
     if (rideResults.length === 0) {
-      return res.status(404).json({ success: false, message: "Ride not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Ride not found" });
     }
 
     const ride = rideResults[0];
     const amount = ride.distance_km * 5000;
 
-    const [paymentResults] = await db.promise().query(
-      "SELECT * FROM payments WHERE ride_id = ? ORDER BY created_at DESC LIMIT 1",
-      [ride_id]
-    );
+    const [paymentResults] = await db
+      .promise()
+      .query(
+        "SELECT * FROM payments WHERE ride_id = ? ORDER BY created_at DESC LIMIT 1",
+        [ride_id]
+      );
 
     const latestPayment = paymentResults[0];
 
@@ -46,44 +49,72 @@ const makePayment = async (req, res) => {
   const { method } = req.body;
 
   try {
-    const [rideResults] = await db.promise().query("SELECT * FROM rides WHERE ride_id = ?", [ride_id]);
+    const [rideResults] = await db
+      .promise()
+      .query("SELECT * FROM rides WHERE ride_id = ?", [ride_id]);
     if (rideResults.length === 0) {
-      return res.status(404).json({ success: false, message: "Ride not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Ride not found" });
     }
 
     const ride = rideResults[0];
+
+    // Fetch customer name
+    const [userResults] = await db
+      .promise()
+      .query("SELECT username FROM users WHERE user_id = ?", [ride.user_id]);
+    const customerName = userResults[0]?.username || "Unknown Customer";
+
     const invoice = new Invoice(ride);
 
     // Store payment
-    await db.promise().query(
-      "INSERT INTO payments (ride_id, amount, method, status, created_at) VALUES (?, ?, ?, ?, NOW())",
-      [invoice.ride_id, invoice.amount, method, "Completed"]
-    );
+    await db
+      .promise()
+      .query(
+        "INSERT INTO payments (ride_id, amount, method, status, created_at) VALUES (?, ?, ?, ?, NOW())",
+        [invoice.ride_id, invoice.amount, method, "Completed"]
+      );
 
-    await db.promise().query(
-      "UPDATE rides SET status = 'Completed', payment_method = ? WHERE ride_id = ?",
-      [method, ride_id]
-    );
+    await db
+      .promise()
+      .query(
+        "UPDATE rides SET status = 'Completed', payment_method = ? WHERE ride_id = ?",
+        [method, ride_id]
+      );
 
-    const [paymentResult] = await db.promise().query(
-      "SELECT * FROM payments WHERE ride_id = ? ORDER BY created_at DESC LIMIT 1", [ride_id]
-    );
-    
+    const [paymentResult] = await db
+      .promise()
+      .query(
+        "SELECT * FROM payments WHERE ride_id = ? ORDER BY created_at DESC LIMIT 1",
+        [ride_id]
+      );
+
     const payment = paymentResult[0];
-    const receipt = new Receipt(payment); // this object should now contain correct fields
-    
+    const receipt = new Receipt(payment);
+
+    // Add notification for admin
+    await db
+      .promise()
+      .query(
+        "INSERT INTO notifications (ride_id, message) VALUES (?, ?)",
+        [
+          ride_id,
+          `Ride from ${ride.pickup_location} to ${ride.dropoff_location} booked by ${customerName} was completed.`,
+        ]
+      );
+
     return res.status(200).json({
       success: true,
       receipt: receipt.toJSON(), // sends receipt_id, amount, method, created_at
     });
-
-
   } catch (err) {
     console.error("Payment error:", err);
-    return res.status(500).json({ success: false, message: "Server error during payment" });
+    return res
+      .status(500)
+      .json({ success: false, message: "Server error during payment" });
   }
 };
-
 
 module.exports = {
   getPaymentByRideId,

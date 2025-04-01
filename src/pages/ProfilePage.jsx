@@ -207,14 +207,14 @@ const ProfilePage = ({ setIsLoggedIn }) => {
         <button
           type="button"
           onClick={handleSaveChanges}
-          className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-700"
+          className="px-4 py-2 cursor-pointer bg-blue-500 text-white rounded-lg hover:bg-blue-700"
         >
           Save Changes
         </button>
         <button
           type="button"
           onClick={handleDeleteAccount}
-          className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-700"
+          className="px-4 py-2 cursor-pointer bg-red-500 text-white rounded-lg hover:bg-red-700"
         >
           Delete Account
         </button>

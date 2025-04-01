@@ -2,7 +2,6 @@ import { Link, Outlet } from "react-router-dom";
 import {
   FaRoute,
   FaHistory,
-  FaBell,
   FaUser,
   FaSignOutAlt,
   FaExclamationCircle,
@@ -40,13 +39,6 @@ const PassengerDashboard = ({ user, onLogout }) => {
               className="flex items-center space-x-2 text-blue-600 hover:text-blue-800"
             >
               <FaHistory /> <span>Ride History</span>
-            </Link>
-
-            <Link
-              to="/dashboard/notifications"
-              className="flex items-center space-x-2 text-blue-600 hover:text-blue-800"
-            >
-              <FaBell /> <span>Notifications</span>
             </Link>
 
             <Link
