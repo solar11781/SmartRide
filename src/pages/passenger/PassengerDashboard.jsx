@@ -44,13 +44,6 @@ const PassengerDashboard = ({ user, onLogout }) => {
             </Link>
 
             <Link
-              to="/dashboard/payments"
-              className="flex items-center space-x-2 text-blue-600 hover:text-blue-800"
-            >
-              <FaMoneyBillWave /> <span>Payments</span>
-            </Link>
-
-            <Link
               to="/dashboard/notifications"
               className="flex items-center space-x-2 text-blue-600 hover:text-blue-800"
             >

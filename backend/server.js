@@ -16,6 +16,7 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads"))); // Serve s
 const authRoutes = require("./routes/auth");
 const rideRoutes = require("./routes/ride");
 const paymentRoutes = require("./routes/payment");
+const driverRoutes = require("./routes/driver");
 const problemRoutes = require("./routes/problem");
 const analyticsRoutes = require("./routes/analytics");
 
@@ -28,6 +29,9 @@ console.log("✅ /api/rides routes loaded");
 
 app.use("/api/payment", paymentRoutes);
 console.log("✅ /api/payment routes loaded");
+
+app.use("/api/driver", driverRoutes);
+console.log("✅ /api/driver routes loaded");
 
 app.use("/api/problems", problemRoutes);
 console.log("✅ /api/problems routes loaded");

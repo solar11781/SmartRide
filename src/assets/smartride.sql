@@ -12,6 +12,9 @@ CREATE TABLE users (
   `phone_number` VARCHAR(15) NOT NULL,
   `password` varchar(255) NOT NULL,
   `role` ENUM('admin', 'customer', 'driver') NOT NULL,
+  `location_lat` FLOAT DEFAULT NULL,
+  `location_lng` FLOAT DEFAULT NULL,
+  `location_name` VARCHAR(255) DEFAULT NULL,
   PRIMARY KEY (`user_id`),
   UNIQUE (`email`),
   UNIQUE (`username`),
@@ -41,7 +44,8 @@ CREATE TABLE drivers_details (
 
 CREATE TABLE rides (
   ride_id INT AUTO_INCREMENT PRIMARY KEY,
-  user_id INT NOT NULL,
+  user_id INT NOT NULL, -- Passenger's user_id
+  driver_id INT DEFAULT NULL, -- Driver's user_id
   vehicle_type VARCHAR(50),
   pickup_location VARCHAR(255),
   dropoff_location VARCHAR(255),
@@ -51,7 +55,10 @@ CREATE TABLE rides (
   duration_min FLOAT,
   eta DATETIME,
   payment_method VARCHAR(50),
-  FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+  rating INT DEFAULT NULL,
+  review TEXT DEFAULT NULL,
+  FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+  FOREIGN KEY (driver_id) REFERENCES users(user_id) ON DELETE SET NULL
 );
 
 --

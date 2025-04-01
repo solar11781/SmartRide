@@ -10,7 +10,6 @@ import RegisterPage from "./pages/RegisterPage";
 import DashboardLayout from "./layouts/DashboardLayout";
 import ProfilePage from "./pages/ProfilePage";
 import MyRides from "./pages/driver/MyRides";
-import RegisterVehicle from "./pages/driver/RegisterVehicle";
 import Notifications from "./pages/Notifications";
 import BookRidePage from "./pages/passenger/BookRidePage";
 import RideHistoryPage from "./pages/passenger/RideHistoryPage";
@@ -63,7 +62,6 @@ function App() {
           element={<DashboardLayout setIsLoggedIn={setIsLoggedIn} />}
         >
           <Route path="my-rides" element={<MyRides />} />
-          <Route path="register-vehicle" element={<RegisterVehicle />} />
           <Route path="notifications" element={<Notifications />} />
           <Route path="profile" element={<ProfilePage setIsLoggedIn={setIsLoggedIn} />} />
           <Route path="book-ride" element={<BookRidePage />} />
