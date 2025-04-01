@@ -1,7 +1,5 @@
-// backend/controllers/paymentController.js
 const db = require("../config/db");
 
-// GET: Get payment info by ride ID
 const getPaymentByRideId = async (req, res) => {
   const { ride_id } = req.params;
   try {
@@ -40,7 +38,6 @@ const getPaymentByRideId = async (req, res) => {
   }
 };
 
-// POST: Make payment for a ride
 const Invoice = require("../models/Invoice");
 const Receipt = require("../models/Receipt");
 

@@ -39,7 +39,7 @@ console.log("✅ /api/problems routes loaded");
 app.use("/api/analytics", analyticsRoutes);
 console.log("✅ /api/analytics routes loaded");
 
-// 🚨 404 Fallback (must come last)
+// 🚨 404 Fallback
 app.use((req, res) => {
   res.status(404).json({ success: false, message: "Route not found" });
 });

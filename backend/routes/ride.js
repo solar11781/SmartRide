@@ -4,8 +4,9 @@ const {
   bookRide,
   getRideHistory,
   deleteRide,
-  getRideById,         // ✅ Add this line
-  getAllRides          // Optional: if you're listing all rides somewhere
+  getRideById,
+  updateRideFeedback,
+  getAllRides
 } = require("../controllers/rideController");
 
 // 📌 Book a new ride
@@ -20,7 +21,10 @@ router.delete("/:ride_id", deleteRide);
 // ✅ Get a ride by ID (used for payment page, etc.)
 router.get("/:ride_id", getRideById);
 
-// (Optional) 📌 Get all rides
+// Updating ride feedback
+router.put("/feedback/:ride_id", updateRideFeedback);
+
+// 📌 Get all rides
 router.get("/", getAllRides);
 
 module.exports = router;

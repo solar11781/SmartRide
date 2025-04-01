@@ -68,7 +68,7 @@ class User {
       LEFT JOIN drivers_details ON users.user_id = drivers_details.driver_id
     `;
       const [rows] = await db.promise().query(sql);
-      return rows; // Return raw rows instead of mapping to User instances
+      return rows;
     } catch (error) {
       console.error("❌ Error fetching all users:", error);
       throw new Error("Database query failed");
@@ -93,7 +93,7 @@ class User {
       INNER JOIN drivers_details ON users.user_id = drivers_details.driver_id
     `;
       const [rows] = await db.promise().query(sql);
-      return rows; // Return raw rows instead of mapping to User instances
+      return rows;
     } catch (error) {
       console.error("❌ Error fetching all drivers:", error);
       throw new Error("Database query failed");
@@ -140,7 +140,7 @@ class User {
       const sql =
         "UPDATE drivers_details SET is_verified = 1 WHERE driver_id = ?";
       const [result] = await db.promise().query(sql, [driver_id]);
-      return result; // Return the result of the query
+      return result;
     } catch (error) {
       console.error("❌ Error verifying driver:", error);
       throw new Error("Database query failed");

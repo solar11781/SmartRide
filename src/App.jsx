@@ -78,7 +78,7 @@ function App() {
           </Route>
         </Route>
 
-        {/* Fallback route (optional) */}
+        {/* Fallback route */}
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </Router>

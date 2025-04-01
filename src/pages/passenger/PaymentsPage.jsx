@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 
 const PaymentsPage = () => {
   const { ride_id } = useParams();
@@ -9,7 +9,6 @@ const PaymentsPage = () => {
   const [loading, setLoading] = useState(true);
   const [method, setMethod] = useState("");
   const [message, setMessage] = useState("");
-  const navigate = useNavigate();
 
   useEffect(() => {
     console.log("Fetching data for ride_id:", ride_id);

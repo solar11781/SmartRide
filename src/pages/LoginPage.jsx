@@ -31,7 +31,7 @@ const LoginPage = ({ setIsLoggedIn }) => {
       localStorage.setItem("role", data.user.role);
       localStorage.setItem("phone_number", data.user.phone_number);
       localStorage.setItem("verified", data.user.verified);
-      localStorage.setItem("token", data.token); // Optional: Store JWT token
+      localStorage.setItem("token", data.token);
 
       setError("");
       setIsLoggedIn(true);

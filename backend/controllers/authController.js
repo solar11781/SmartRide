@@ -34,7 +34,7 @@ const register = async (req, res) => {
     // Sanitize input
     username = username?.trim();
     email = email?.trim().toLowerCase();
-    phone_number = phone_number?.replace(/\D/g, ""); // Remove non-digits
+    phone_number = phone_number?.replace(/\D/g, "");
     password = password?.trim();
     role = role?.trim().toLowerCase();
 
@@ -274,7 +274,7 @@ const deleteUser = async (req, res) => {
   try {
     const driverDetails = await User.getDriverDetails(user_id);
 
-    // Delete associated files
+    // Delete associated files (Does not work for some reason)
     if (driverDetails) {
       const { id_card, driver_license, insurance_document } = driverDetails;
 

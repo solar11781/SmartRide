@@ -2,7 +2,6 @@ import { Link, Outlet } from "react-router-dom";
 import {
   FaRoute,
   FaHistory,
-  FaMoneyBillWave,
   FaBell,
   FaUser,
   FaSignOutAlt,
@@ -10,7 +9,7 @@ import {
 } from "react-icons/fa";
 
 const PassengerDashboard = ({ user, onLogout }) => {
-  const { username, role } = user;
+  const { username } = user;
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">

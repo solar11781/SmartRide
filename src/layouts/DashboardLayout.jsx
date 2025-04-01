@@ -1,4 +1,3 @@
-// src/layouts/DashboardLayout.jsx
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import PassengerDashboard from "../pages/passenger/PassengerDashboard";

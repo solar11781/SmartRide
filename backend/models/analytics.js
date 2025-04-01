@@ -27,7 +27,7 @@ class Analytics {
       WHERE status = 'Completed'
     `;
     const [rows] = await db.promise().query(query);
-    return rows[0].total !== null ? parseFloat(rows[0].total) : 0; // Ensure totalRevenue is a number
+    return rows[0].total !== null ? parseFloat(rows[0].total) : 0;
   }
 
   // Get revenue per month
@@ -40,8 +40,8 @@ class Analytics {
     `;
     const [rows] = await db.promise().query(query);
     return rows.map((row) => ({
-      month: row.month || 0, // Ensure month is valid
-      total: row.total !== null ? row.total : 0, // Ensure total is a number
+      month: row.month || 0,
+      total: row.total !== null ? row.total : 0,
     }));
   }
 }

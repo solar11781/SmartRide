@@ -1,4 +1,3 @@
-// models/Invoice.js
 class Invoice {
     constructor(ride) {
       this.ride_id = ride.ride_id;
