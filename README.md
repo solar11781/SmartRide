@@ -1,4 +1,4 @@
-# 🚗 SmartRide - Uber Clone
+# 🚗 SmartRide - Online Ride-Sharing Platform
 
 SmartRide is a ride-sharing web application built using:
 
@@ -28,7 +28,7 @@ SmartRide is a ride-sharing web application built using:
    - **Apache** (for PHP)
    - **MySQL** (for the database)
 2. Open **phpMyAdmin** (`http://localhost/phpmyadmin`).
-3. Make a database called `smartride` and import the `smartride.sql` database file.
+3. Make a database called `smartride` and import the `smartride.sql` database file (from src\assets).
 
 ### 3️⃣ Install Dependencies & Start the React App
 
@@ -58,6 +58,12 @@ And then start the development server:
 ```sh
 node server.js
 ```
+
+---
+
+Admin account:
+   - **Username**: admin
+   - **Password**: 111
 
 ---
 
