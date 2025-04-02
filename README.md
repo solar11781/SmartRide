@@ -22,11 +22,11 @@ SmartRide is a ride-sharing web application built using:
    VITE_MAPBOX_TOKEN=your_mapbox_access_token_here
    ```
 
-### 2️⃣ Set Up XAMPP (PHP & MySQL Backend)
+### 2️⃣ Set Up XAMPP
 
 1. Open **XAMPP** and **start** the following services:
-   - **Apache** (for PHP)
-   - **MySQL** (for the database)
+   - **Apache**
+   - **MySQL**
 2. Open **phpMyAdmin** (`http://localhost/phpmyadmin`).
 3. Make a database called `smartride` and import the `smartride.sql` database file (from src\assets).
 
