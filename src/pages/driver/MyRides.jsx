@@ -22,7 +22,7 @@ const MyRides = () => {
         setPendingRides(unassigned);
       }
     } catch (err) {
-      console.error("❌ Error loading rides:", err);
+      console.error("Error loading rides:", err);
     } finally {
       setLoading(false);
     }
@@ -35,13 +35,13 @@ const MyRides = () => {
       });
       const data = await res.json();
       if (data.success) {
-        alert("✅ Ride marked as completed");
+        alert("Ride marked as completed");
         fetchRides();
       } else {
-        alert("❌ Failed to complete ride");
+        alert("Failed to complete ride");
       }
     } catch (err) {
-      console.error("❌ Error:", err);
+      console.error("Error:", err);
     }
   };
 
@@ -54,13 +54,13 @@ const MyRides = () => {
       });
       const data = await res.json();
       if (data.success) {
-        alert("✅ Ride assigned to you!");
+        alert("Ride assigned to you!");
         fetchRides();
       } else {
-        alert("❌ Failed to assign ride");
+        alert("Failed to assign ride");
       }
     } catch (err) {
-      console.error("❌ Error assigning ride:", err);
+      console.error("Error assigning ride:", err);
     }
   };
 

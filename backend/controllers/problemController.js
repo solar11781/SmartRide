@@ -13,7 +13,7 @@ const createProblem = async (req, res) => {
     await problem.save();
     return res.status(201).json({ success: true, message: "Problem reported successfully!" });
   } catch (error) {
-    console.error("❌ Error creating problem report:", error);
+    console.error("Error creating problem report:", error);
     return res.status(500).json({ success: false, message: "Server error while reporting problem." });
   }
 };
@@ -26,7 +26,7 @@ const getProblemsByUser = async (req, res) => {
     const problems = await Problem.findByUserId(user_id);
     return res.status(200).json({ success: true, problems });
   } catch (error) {
-    console.error("❌ Error fetching problems:", error);
+    console.error("Error fetching problems:", error);
     return res.status(500).json({ success: false, message: "Server error" });
   }
 };
@@ -37,7 +37,7 @@ const getAllProblems = async (req, res) => {
     const problems = await Problem.findAll();
     return res.status(200).json({ success: true, problems });
   } catch (error) {
-    console.error("❌ Error fetching all problems:", error);
+    console.error("Error fetching all problems:", error);
     return res.status(500).json({ success: false, message: "Server error" });
   }
 };
@@ -55,7 +55,7 @@ const updateProblemStatus = async (req, res) => {
     await Problem.updateStatus(problem_id, status);
     return res.status(200).json({ success: true, message: "Problem status updated successfully!" });
   } catch (error) {
-    console.error("❌ Error updating problem status:", error);
+    console.error("Error updating problem status:", error);
     return res.status(500).json({ success: false, message: "Server error" });
   }
 };

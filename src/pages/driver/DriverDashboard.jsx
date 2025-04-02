@@ -16,7 +16,7 @@ const DriverDashboard = ({ user, onLogout }) => {
   const [saving, setSaving] = useState(false);
 
   const handleSaveLocation = async () => {
-    if (!manualLocation.trim()) return alert("❌ Please enter a location.");
+    if (!manualLocation.trim()) return alert("Please enter a location.");
     setSaving(true);
 
     try {
@@ -31,13 +31,13 @@ const DriverDashboard = ({ user, onLogout }) => {
 
       const data = await res.json();
       if (data.success) {
-        alert("📍 Location saved!");
+        alert("Location saved!");
       } else {
-        alert("❌ Failed to save location.");
+        alert("Failed to save location.");
       }
     } catch (error) {
       console.error(error);
-      alert("❌ Server error.");
+      alert("Server error.");
     } finally {
       setSaving(false);
     }

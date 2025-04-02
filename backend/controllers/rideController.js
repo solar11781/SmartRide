@@ -48,7 +48,7 @@ const bookRide = async (req, res) => {
       .status(201)
       .json({ success: true, message: "Ride booked successfully!" });
   } catch (error) {
-    console.error("❌ Ride booking error:", error);
+    console.error("Ride booking error:", error);
     return res
       .status(500)
       .json({ success: false, message: "Server error while booking ride." });
@@ -62,7 +62,7 @@ const getRideHistory = async (req, res) => {
     const rides = await Ride.findByUserId(user_id);
     return res.status(200).json({ success: true, rides });
   } catch (error) {
-    console.error("❌ Error fetching ride history:", error);
+    console.error("Error fetching ride history:", error);
     return res.status(500).json({ success: false, message: "Server error" });
   }
 };
@@ -76,7 +76,7 @@ const deleteRide = async (req, res) => {
       .status(200)
       .json({ success: true, message: "Ride deleted successfully" });
   } catch (err) {
-    console.error("❌ Error deleting ride:", err);
+    console.error("Error deleting ride:", err);
     return res
       .status(500)
       .json({ success: false, message: "Failed to delete ride" });
@@ -88,7 +88,7 @@ const getAllRides = async (req, res) => {
     const rides = await Ride.findAll();
     return res.status(200).json({ success: true, rides });
   } catch (error) {
-    console.error("❌ Error fetching all rides:", error);
+    console.error("Error fetching all rides:", error);
     return res
       .status(500)
       .json({ success: false, message: "Failed to fetch rides" });
@@ -108,7 +108,7 @@ const getRideById = async (req, res) => {
 
     res.json({ success: true, ride });
   } catch (err) {
-    console.error("❌ Error getting ride:", err);
+    console.error("Error getting ride:", err);
     res.status(500).json({ success: false, message: "Server error" });
   }
 };
@@ -129,7 +129,7 @@ const updateRideFeedback = async (req, res) => {
       .status(200)
       .json({ success: true, message: "Feedback updated successfully." });
   } catch (error) {
-    console.error("❌ Error updating feedback:", error);
+    console.error("Error updating feedback:", error);
     return res.status(500).json({ success: false, message: "Server error." });
   }
 };

@@ -23,7 +23,7 @@ const BookRidePage = () => {
       const [lng, lat] = data.features[0].geometry.coordinates;
       setCoordinates([lng, lat]);
     } else {
-      setMessage("❌ Unable to find location: " + query);
+      setMessage("Unable to find location: " + query);
     }
   };
 
@@ -39,7 +39,7 @@ const BookRidePage = () => {
     e.preventDefault();
 
     if (!pickup || !dropoff || !pickupCoordinates || !dropoffCoordinates) {
-      return setMessage("❌ Please provide valid pickup and dropoff locations.");
+      return setMessage("Please provide valid pickup and dropoff locations.");
     }
 
     const user_id = localStorage.getItem("user_id");
@@ -51,7 +51,7 @@ const BookRidePage = () => {
     const route = routeData.routes[0];
 
     if (!route) {
-      return setMessage("❌ Couldn't find a route between locations.");
+      return setMessage("Couldn't find a route between locations.");
     }
 
     const distance = (route.distance / 1000).toFixed(2); // in km

@@ -146,7 +146,7 @@ const register = async (req, res) => {
         .status(200)
         .json({ success: true, message: "Account created successfully!" });
     } catch (error) {
-      console.error("❌ Error during registration:", error);
+      console.error("Error during registration:", error);
       res
         .status(500)
         .json({ success: false, message: "Server error during registration." });
@@ -193,7 +193,7 @@ const login = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("❌ Error during login:", error);
+    console.error("Error during login:", error);
     res.status(500).json({ message: "Server error during login." });
   }
 };
@@ -204,7 +204,7 @@ const getAllUsers = async (req, res) => {
     const users = await User.fetchAllUsers();
     res.status(200).json(users);
   } catch (error) {
-    console.error("❌ Error fetching users:", error);
+    console.error("Error fetching users:", error);
     res.status(500).json({ message: "Failed to fetch users" });
   }
 };
@@ -215,7 +215,7 @@ const getAllDrivers = async (req, res) => {
     const drivers = await User.fetchAllDrivers();
     res.status(200).json(drivers);
   } catch (error) {
-    console.error("❌ Error fetching drivers:", error);
+    console.error("Error fetching drivers:", error);
     res.status(500).json({ message: "Failed to fetch drivers" });
   }
 };
@@ -232,7 +232,7 @@ const verifyDriver = async (req, res) => {
 
     res.status(200).json({ message: "Driver verified successfully" });
   } catch (error) {
-    console.error("❌ Error verifying driver:", error);
+    console.error("Error verifying driver:", error);
     res.status(500).json({ message: "Server error" });
   }
 };
@@ -249,7 +249,7 @@ const getDriverDetails = async (req, res) => {
 
     res.status(200).json(driverDetails);
   } catch (error) {
-    console.error("❌ Error fetching driver details:", error);
+    console.error("Error fetching driver details:", error);
     res.status(500).json({ message: "Server error" });
   }
 };
@@ -262,7 +262,7 @@ const updateUser = async (req, res) => {
     await User.updateDetails(user_id, { username, email, phone_number });
     res.status(200).json({ message: "User details updated successfully" });
   } catch (error) {
-    console.error("❌ Error updating user details:", error);
+    console.error("Error updating user details:", error);
     res.status(500).json({ message: "Server error" });
   }
 };
@@ -294,7 +294,7 @@ const deleteUser = async (req, res) => {
       .status(200)
       .json({ message: "User account and documents deleted successfully" });
   } catch (error) {
-    console.error("❌ Error deleting user:", error);
+    console.error("Error deleting user:", error);
     res.status(500).json({ message: "Server error" });
   }
 };

@@ -22,7 +22,7 @@ const getRideStats = async (req, res) => {
       ridesPerMonth,
     });
   } catch (error) {
-    console.error("❌ Error fetching ride stats:", error);
+    console.error("Error fetching ride stats:", error);
     res.status(500).json({
       success: false,
       message: "Server error while fetching ride stats.",
@@ -42,7 +42,7 @@ const getRevenueStats = async (req, res) => {
       revenuePerMonth,
     });
   } catch (error) {
-    console.error("❌ Error fetching revenue stats:", error);
+    console.error("Error fetching revenue stats:", error);
     res.status(500).json({
       success: false,
       message: "Server error while fetching revenue stats.",

@@ -10,25 +10,10 @@ const getDriverRides = async (req, res) => {
 
     res.status(200).json({ success: true, rides });
   } catch (err) {
-    console.error("❌ Error in getDriverRides:", err);
+    console.error("Error in getDriverRides:", err);
     res.status(500).json({ success: false, message: "Server error" });
   }
 };
-
-// const completeRide = async (req, res) => {
-//   const { ride_id } = req.params;
-
-//   try {
-//     await db
-//       .promise()
-//       .query("UPDATE rides SET status = 'Completed' WHERE ride_id = ?", [ride_id]);
-
-//     res.status(200).json({ success: true, message: "Ride marked as completed" });
-//   } catch (err) {
-//     console.error("❌ Error in completeRide:", err);
-//     res.status(500).json({ success: false, message: "Server error" });
-//   }
-// };
 
 const completeRide = async (req, res) => {
   const { ride_id } = req.params;
@@ -70,7 +55,7 @@ const completeRide = async (req, res) => {
       .status(200)
       .json({ success: true, message: "Ride marked as completed" });
   } catch (err) {
-    console.error("❌ Error in completeRide:", err);
+    console.error("Error in completeRide:", err);
     res.status(500).json({ success: false, message: "Server error" });
   }
 };
@@ -95,7 +80,7 @@ const assignRideToDriver = async (req, res) => {
 
     res.status(200).json({ success: true, message: "Ride assigned to driver" });
   } catch (err) {
-    console.error("❌ Error assigning ride:", err);
+    console.error("Error assigning ride:", err);
     res.status(500).json({ success: false, message: "Server error" });
   }
 };
@@ -129,7 +114,7 @@ const setDriverLocation = async (req, res) => {
 
     res.status(200).json({ success: true, message: "Location updated." });
   } catch (err) {
-    console.error("❌ Error updating location:", err);
+    console.error("Error updating location:", err);
     res.status(500).json({ success: false, message: "Server error" });
   }
 };

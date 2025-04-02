@@ -34,7 +34,7 @@ class User {
         .query(sql, [username, phone_number, email]);
       return rows.length ? new User(rows[0]) : null; // Return the first matching user or null
     } catch (error) {
-      console.error("❌ Error checking for duplicate user:", error);
+      console.error("Error checking for duplicate user:", error);
       throw new Error("Database query failed");
     }
   }
@@ -70,7 +70,7 @@ class User {
       const [rows] = await db.promise().query(sql);
       return rows;
     } catch (error) {
-      console.error("❌ Error fetching all users:", error);
+      console.error("Error fetching all users:", error);
       throw new Error("Database query failed");
     }
   }
@@ -95,7 +95,7 @@ class User {
       const [rows] = await db.promise().query(sql);
       return rows;
     } catch (error) {
-      console.error("❌ Error fetching all drivers:", error);
+      console.error("Error fetching all drivers:", error);
       throw new Error("Database query failed");
     }
   }
@@ -142,7 +142,7 @@ class User {
       const [result] = await db.promise().query(sql, [driver_id]);
       return result;
     } catch (error) {
-      console.error("❌ Error verifying driver:", error);
+      console.error("Error verifying driver:", error);
       throw new Error("Database query failed");
     }
   }

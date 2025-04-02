@@ -36,7 +36,7 @@ const getPaymentByRideId = async (req, res) => {
       },
     });
   } catch (err) {
-    console.error("❌ Get payment error:", err);
+    console.error("Get payment error:", err);
     res.status(500).json({ success: false, message: "Server error" });
   }
 };
